@@ -6,6 +6,6 @@
     --color-tertiary: #36403E;
 }
 
-p, a{
+p, a, input{
     font-size: 20px;
 }
