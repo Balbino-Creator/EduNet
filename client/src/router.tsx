@@ -1,6 +1,10 @@
 import { createBrowserRouter } from "react-router-dom";
 import Layout from "./layouts/Layout";
 import Login from "./views/Login";
+import Home from "./views/Home";
+import Projects from "./views/Projects";
+import LiveCode from "./views/LiveCode";
+import Settings from "./views/Settings";
 
 
 export const router = createBrowserRouter([
@@ -11,6 +15,22 @@ export const router = createBrowserRouter([
             {
                 index: true,
                 element: <Login/>
+            },
+            {
+                path: 'home',
+                element: <Home/>
+            },
+            {
+                path: 'projects',
+                element: <Projects/>
+            },
+            {
+                path: 'live-code',
+                element: <LiveCode/>
+            },
+            {
+                path: 'settings',
+                element: <Settings/>
             }
         ]
     }
