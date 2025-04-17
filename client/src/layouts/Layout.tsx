@@ -3,7 +3,7 @@ import { Outlet, Link } from "react-router-dom"
 export default function Layout() {
   return (
     <>
-      <div className="flex h-screen box-border">
+      <div className="flex h-screen">
         <aside className="w-80 pl-12 pt-12 bg-primary flex flex-col">
           <h2 className="uppercase text-5xl mb-5">EduNet</h2>
           <nav className="flex-1">
