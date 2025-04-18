@@ -4,10 +4,10 @@ export default function Layout() {
   return (
     <>
       <div className="flex h-screen">
-        <aside className="w-80 pl-12 pt-12 bg-primary flex flex-col">
-          <h2 className="uppercase text-5xl mb-5">EduNet</h2>
+        <aside className="w-80 pl-12 pt-12 bg-primary flex flex-col text-white">
+          <h2 className="uppercase text-6xl mb-16 font-bold underline">EduNet</h2>
           <nav className="flex-1">
-            <ul className="flex flex-col space-y-20 justify-center h-full">
+            <ul className="flex flex-col space-y-5 justify-center h-fulf font-bold text-xl">
               <Link to={"/"}>
                 <li>
                   <a href="">Login</a>

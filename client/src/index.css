@@ -1,15 +1,17 @@
 @import "tailwindcss";
 
 @theme {
-    --color-primary: #00E0BF;
-    --color-secundary: #EB7442;
-    --color-tertiary: #36403E;
+    --color-primary: #00bba7;
+    --color-secundary: #ff8904;
+    --color-tertiary: #8e51ff;
+    --color-default: #6a7282;
 }
 
 *{
     box-sizing: border-box;
 }
 
-p, a, input{
-    font-size: 20px;
+.page-title{
+    font-size: var(--text-3xl) /* 1.875rem = 30px */;
+    line-height: var(--tw-leading, var(--text-3xl--line-height));
 }
