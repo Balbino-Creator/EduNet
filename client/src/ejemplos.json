@@ -1,0 +1,57 @@
+{
+    "user": {
+      "name": "Balbino M.",
+      "profileImage": "/python-logo.jpg"
+    },
+    "liveCode": {
+      "messages": [
+        {
+          "user": "Usuario 1",
+          "message": "Hola, ¿listos para programar?"
+        },
+        {
+          "user": "Usuario 2",
+          "message": "¡Sí! Comparte el código."
+        }
+      ],
+      "participants": {
+        "active": ["Usuario 1", "Usuario 2", "Usuario 3"],
+        "disconnected": ["Usuario 4", "Usuario 5"]
+      },
+      "liveCodeSnippet": "Esperando cambios..."
+    },
+    "projects": [
+      {
+        "name": "Project 1",
+        "classes": ["Clase 1", "Clase 2", "Clase 3"]
+      },
+      {
+        "name": "Project 2",
+        "classes": ["Clase A", "Clase B", "Clase C"]
+      },
+      {
+        "name": "Project 3",
+        "classes": ["Clase X", "Clase Z"]
+      },
+      {
+        "name": "Project 4",
+        "classes": ["Clase M", "Clase N", "Clase O"]
+      },
+      {
+        "name": "Project 5",
+        "classes": ["Clase M"]
+      }
+    ],
+    "settings": {
+      "darkMode": false,
+      "languageOptions": ["Español", "Inglés", "Francés"],
+      "accessibility": false,
+      "account": {
+        "username": "Balbino",
+        "email": "bmongar0111@g.educaand.es"
+      },
+      "security": {
+        "twoFactorAuthentication": false
+      }
+    }
+}
