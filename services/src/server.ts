@@ -17,6 +17,9 @@ connectDB()
 
 const server = express()
 
-server.use('/', router)
+// Read data
+server.use(express.json())
+
+server.use('/api/users', router)
 
 export default server
