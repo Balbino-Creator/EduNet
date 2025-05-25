@@ -1,5 +1,7 @@
 import express from 'express'
 import router from './router'
+import swaggerUi from 'swagger-ui-express'
+import swaggerSpec, { swaggerUiOptions } from './config/swagger'
 import db from './config/db'
 
 async function connectDB() {
@@ -21,5 +23,8 @@ const server = express()
 server.use(express.json())
 
 server.use('/api/', router)
+
+// Docs
+server.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, swaggerUiOptions))
 
 export default server
