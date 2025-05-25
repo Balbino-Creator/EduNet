@@ -8,23 +8,23 @@ import Classroom from './Classroom.model';
 class ChatMessage extends Model {
     @ForeignKey(() => User)
     @Column({ type: DataType.INTEGER })
-    userId: number;
+    declare userId: number
 
     @BelongsTo(() => User)
-    user: User;
+    declare user: User
 
     @ForeignKey(() => Classroom)
     @Column({ type: DataType.INTEGER })
-    classroomId: number;
+    declare classroomId: number
 
     @BelongsTo(() => Classroom)
-    classroom: Classroom;
+    declare classroom: Classroom
 
     @Column({
         type: DataType.TEXT,
         allowNull: false
     })
-    message: string;
+    declare message: string
 }
 
-export default ChatMessage;
+export default ChatMessage

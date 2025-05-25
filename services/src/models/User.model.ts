@@ -14,26 +14,26 @@ class User extends Model {
         type: DataType.STRING(50),
         allowNull: false
     })
-    name: string;
+    declare name: string
 
     @Column({
         type: DataType.STRING(100),
         allowNull: false
     })
-    last_names: string;
+    declare last_names: string
 
     @Column({
         type: DataType.ENUM(...Object.values(UserRole)),
         allowNull: false
     })
-    role: UserRole;
+    declare role: UserRole;
 
     @ForeignKey(() => Classroom)
     @Column({ type: DataType.INTEGER })
-    classroomId: number;
+    declare classroomId: number
 
     @BelongsTo(() => Classroom)
-    classroom: Classroom;
+    declare classroom: Classroom
 }
 
-export default User;
+export default User

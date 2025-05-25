@@ -20,6 +20,6 @@ const server = express()
 // Read data
 server.use(express.json())
 
-server.use('/api/users', router)
+server.use('/api/', router)
 
 export default server

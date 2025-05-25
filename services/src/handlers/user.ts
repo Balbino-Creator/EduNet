@@ -1,13 +1,96 @@
 import { Request, Response } from "express"
-import { validationResult } from 'express-validator'
-import User from "../models/User.model"
+import User, { UserRole } from "../models/User.model"
+
+export const getUsers = async (req: Request, res: Response) => {
+    try {
+        const users = await User.findAll()
+        res.json({data: users})
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+export const getUserById = async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params
+        const user = await User.findByPk(id)
+
+        if(!user){
+            res.status(404).json({ error: 'User not found' })
+            return
+        }
+
+        res.json({data: user})
+    } catch (error) {
+        console.log(error)
+    }
+}
 
 export const createUser = async (req : Request, res : Response) => {
-    let errors = validationResult(req)
-    if(!errors.isEmpty()) {
-        res.status(400).json({errors: errors.array()})
-        return
+    try {
+        const user = await User.create(req.body)
+        res.json({data: user})
+    } catch (error) {
+        console.log(error)
     }
-    const user = await User.create(req.body)
-    res.json({data: user})
+}
+
+export const updtateUser = async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params
+        const user = await User.findByPk(id)
+
+        if(!user){
+            res.status(404).json({ error: 'User not found' })
+            return
+        }
+
+        await user.update(req.body)
+        await user.save()
+
+        res.json({data: user})
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+export const updtateRole = async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params
+        const user = await User.findByPk(id)
+
+        if(!user){
+            res.status(404).json({ error: 'User not found' })
+            return
+        }
+
+        if (user.role !== UserRole.TEACHER && user.role !== UserRole.STUDENT) {
+            res.status(400).json({ error: 'Invalid role' })
+            return
+        }
+
+        user.role = user.role === UserRole.TEACHER ? UserRole.STUDENT : UserRole.TEACHER;
+        await user.save()
+
+        res.json({data: user})
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+export const deleteUser = async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params
+        const user = await User.findByPk(id)
+
+        if(!user){
+            res.status(404).json({ error: 'User not found' })
+            return
+        }
+
+        await user.destroy()
+        res.json({data: 'User deleted'})
+    } catch (error) {
+        console.log(error)
+    }
 }

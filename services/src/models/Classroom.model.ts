@@ -11,20 +11,20 @@ class Classroom extends Model {
         type: DataType.STRING(50),
         allowNull: false
     })
-    name: string;
+    declare name: string
 
     @ForeignKey(() => Project)
     @Column({ type: DataType.INTEGER })
-    projectId: number;
+    declare projectId: number
 
     @BelongsTo(() => Project)
-    project: Project;
+    declare project: Project
 
     @HasMany(() => User)
-    users: User[];
+    declare users: User[]
 
     @HasMany(() => ChatMessage)
-    chatMessages: ChatMessage[];
+    declare chatMessages: ChatMessage[]
 }
 
-export default Classroom;
+export default Classroom

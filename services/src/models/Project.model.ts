@@ -9,10 +9,10 @@ class Project extends Model {
         type: DataType.STRING(100),
         allowNull: false
     })
-    name: string;
+    declare name: string
 
     @HasMany(() => Classroom)
-    classrooms: Classroom[];
+    declare classrooms: Classroom[]
 }
 
 export default Project;
