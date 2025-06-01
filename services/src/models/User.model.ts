@@ -1,4 +1,4 @@
-import { Table, Column, Model, DataType, ForeignKey, BelongsTo } from 'sequelize-typescript';
+import { Table, Column, Model, DataType, ForeignKey, BelongsTo, BeforeValidate, Unique, AllowNull, Default } from 'sequelize-typescript';
 import Classroom from './Classroom.model';
 
 export enum UserRole {
@@ -10,6 +10,7 @@ export enum UserRole {
     tableName: 'users'
 })
 class User extends Model {
+    @Unique
     @Column({
         type: DataType.STRING(50),
         allowNull: false
@@ -28,12 +29,59 @@ class User extends Model {
     })
     declare role: UserRole;
 
+    @Unique
+    @AllowNull(true)
+    @Column({
+        type: DataType.STRING(100),
+        validate: {
+            isEmail: true,
+        }
+    })
+    declare email: string | null
+
+    @AllowNull(true)
+    @Column({
+        type: DataType.STRING,
+    })
+    declare password: string | null
+
+    @Default(false)
+    @Column({
+        type: DataType.BOOLEAN,
+        allowNull: false,
+    })
+    declare confirmed: boolean;
+
     @ForeignKey(() => Classroom)
-    @Column({ type: DataType.INTEGER })
-    declare classroomId: number
+    @AllowNull(true)
+    @Column({
+        type: DataType.INTEGER,
+    })
+    declare classroomId: number | null
 
     @BelongsTo(() => Classroom)
     declare classroom: Classroom
+
+    @BeforeValidate
+    static validateRoleFields(instance: User) {
+        if (instance.role === UserRole.STUDENT) {
+            if (instance.email) {
+                throw new Error('Students must not have an email address.');
+            }
+            if (!instance.password) {
+                throw new Error('Students must have a password.');
+            }
+        }
+
+        if (instance.role === UserRole.TEACHER) {
+            if (!instance.email) {
+                throw new Error('Teachers must have an email address.');
+            }
+            if (instance.password) {
+                throw new Error('Teachers must not have a password.');
+            }
+        }
+    }
 }
 
-export default User
+export default User;

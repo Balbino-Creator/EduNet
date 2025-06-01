@@ -5,7 +5,8 @@ import { createClassroom, deleteClassroom, getClassroomById, getClassrooms, upda
 import { createChatMessage, deleteChatMessage, getChatMessageById, getChatMessages, updateChatMessage } from './handlers/chatMessage'
 import { body, param } from 'express-validator'
 import { UserRole } from './models/User.model'
-import { handleInputErrors } from './middleware'
+import { authenticateToken, handleInputErrors } from './middleware'
+import { confirmAccount, createAccount, login } from './handlers/auth'
 
 const router = Router()
 /**
@@ -32,6 +33,19 @@ const router = Router()
  *                      enum: [TEACHER, STUDENT]
  *                      description: User role
  *                      example: TEACHER
+ *                  email:
+ *                      type: string
+ *                      format: email
+ *                      description: Email (only for teachers)
+ *                      example: john.doe@example.com
+ *                  password:
+ *                      type: string
+ *                      description: User's password
+ *                      example: "securePassword123"
+ *                  confirmed:
+ *                      type: boolean
+ *                      description: Indicates if the user confirmed their email
+ *                      example: false
  *          Project:
  *              type: object
  *              properties:
@@ -78,6 +92,109 @@ const router = Router()
  *                      description: Message content
  *                      example: "Hello everyone!"
  */
+
+// Auth endpoints
+
+/**
+ * @swagger
+ * /api/register:
+ *   post:
+ *     tags: [Auth]
+ *     summary: Register a new user (only teachers can use email)
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/User'
+ *     responses:
+ *       201:
+ *         description: User registered successfully, waiting for confirmation
+ *       400:
+ *         description: Invalid input or students trying to register with email
+ *       500:
+ *         description: Internal server error
+ */
+
+/**
+ * @swagger
+ * /api/login:
+ *   post:
+ *     tags: [Auth]
+ *     summary: Log in using LDAP authentication (only confirmed teachers)
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 description: Email of the user
+ *                 example: john.doe@example.com
+ *               password:
+ *                 type: string
+ *                 description: User's password
+ *                 example: "securePassword123"
+ *     responses:
+ *       200:
+ *         description: Login successful
+ *       401:
+ *         description: Invalid credentials, unconfirmed email, or unauthorized role
+ *       500:
+ *         description: Internal server error
+ */
+
+router.get("/confirm", confirmAccount)
+
+router.post('/register',
+    body('name').notEmpty().withMessage('The name of the user cannot be empty'),
+    body('last_names').notEmpty().withMessage('The last names of the user cannot be empty'),
+    body('role')
+        .notEmpty().withMessage('Role is required')
+        .isIn(Object.values(UserRole)).withMessage(`Role must be one of: ${Object.values(UserRole).join(', ')}`),
+    body('email')
+        .if(body('role').equals(UserRole.TEACHER))
+        .notEmpty().withMessage('Email is required for teachers')
+        .isEmail().withMessage('Invalid email format'),
+    body('email')
+        .if(body('role').equals(UserRole.STUDENT))
+        .custom(value => {
+            if (value) throw new Error('Students must not provide an email.')
+            return true
+        }),
+    body('password')
+        .if(body('role').equals(UserRole.STUDENT))
+        .notEmpty().withMessage('Password is required for students')
+        .isLength({ min: 6 }).withMessage('Password must be at least 6 characters long'),
+    body('password')
+        .if(body('role').equals(UserRole.TEACHER))
+        .custom(value => {
+            if (value) throw new Error('Teachers must not provide a password.')
+            return true
+        }),
+    body('password_confirmation')
+        .optional()
+        .custom((value, { req }) => {
+            if (req.body.role === UserRole.STUDENT && value !== req.body.password) {
+                throw new Error("Password confirmation must match password.")
+            }
+            return true
+        }),
+    handleInputErrors,
+    createAccount
+)
+
+router.post('/login',
+    body('identifier')
+        .notEmpty().withMessage('Username or Email is required'),
+    body('password')
+        .notEmpty().withMessage('Password is required'),
+    handleInputErrors,
+    login
+)
 
 // Users endpoint
 
@@ -172,16 +289,26 @@ router.get('/users', getUsers)
 
 router.get('/users/:id',
     param('id').isInt().withMessage('ID not valid'),
+    authenticateToken,
     handleInputErrors,
     getUserById
 )
 
 router.post('/users',
+    authenticateToken,
     body('name').notEmpty().withMessage('The name of user cannot be empty'),
     body('last_names').notEmpty().withMessage('The last names of user cannot be empty'),
     body('role')
         .notEmpty().withMessage('Role is required')
-        .isIn(Object.values(UserRole)).withMessage(`Role must be one of: ${Object.values(UserRole).join(', ')}`),
+        .equals(UserRole.STUDENT).withMessage('Only students can be created via this endpoint'),
+    body('password')
+        .notEmpty().withMessage('Password is required for students')
+        .isLength({ min: 6 }).withMessage('Password must be at least 6 characters long'),
+    body('email')
+        .custom(value => {
+            if (value) throw new Error('Students must not provide an email.')
+            return true
+        }),
     handleInputErrors,
     createUser
 )
@@ -193,18 +320,21 @@ router.put('/users/:id',
     body('role')
         .notEmpty().withMessage('Role is required')
         .isIn(Object.values(UserRole)).withMessage(`Role must be one of: ${Object.values(UserRole).join(', ')}`),
+    authenticateToken,
     handleInputErrors,
     updtateUser
 )
 
 router.patch('/users/:id',
     param('id').isInt().withMessage('ID not valid'),
+    authenticateToken,
     handleInputErrors,
     updtateRole
 )
 
 router.delete('/users/:id',
     param('id').isInt().withMessage('ID not valid'),
+    authenticateToken,
     handleInputErrors,
     deleteUser
 )
@@ -302,12 +432,14 @@ router.get('/projects', getProjects)
 
 router.get('/projects/:id',
     param('id').isInt().withMessage('ID not valid'),
+    authenticateToken,
     handleInputErrors,
     getProjectById
 )
 
 router.post('/projects',
     body('name').notEmpty().withMessage('Project name cannot be empty'),
+    authenticateToken,
     handleInputErrors,
     createProject
 )
@@ -315,12 +447,14 @@ router.post('/projects',
 router.put('/projects/:id',
     param('id').isInt().withMessage('ID not valid'),
     body('name').notEmpty().withMessage('Project name cannot be empty'),
+    authenticateToken,
     handleInputErrors,
     updateProject
 )
 
 router.delete('/projects/:id',
     param('id').isInt().withMessage('ID not valid'),
+    authenticateToken,
     handleInputErrors,
     deleteProject
 )
@@ -418,6 +552,7 @@ router.get('/classrooms', getClassrooms)
 
 router.get('/classrooms/:id',
     param('id').isInt().withMessage('ID not valid'),
+    authenticateToken,
     handleInputErrors,
     getClassroomById
 )
@@ -425,6 +560,7 @@ router.get('/classrooms/:id',
 router.post('/classrooms',
     body('name').notEmpty().withMessage('Classroom name cannot be empty'),
     body('projectId').isInt().withMessage('Project ID must be a valid integer'),
+    authenticateToken,
     handleInputErrors,
     createClassroom
 )
@@ -432,12 +568,14 @@ router.post('/classrooms',
 router.put('/classrooms/:id',
     param('id').isInt().withMessage('ID not valid'),
     body('name').notEmpty().withMessage('Classroom name cannot be empty'),
+    authenticateToken,
     handleInputErrors,
     updateClassroom
 )
 
 router.delete('/classrooms/:id',
     param('id').isInt().withMessage('ID not valid'),
+    authenticateToken,
     handleInputErrors,
     deleteClassroom
 )
@@ -535,6 +673,7 @@ router.get('/chatMessages', getChatMessages)
 
 router.get('/chatMessages/:id',
     param('id').isInt().withMessage('ID not valid'),
+    authenticateToken,
     handleInputErrors,
     getChatMessageById
 )
@@ -543,6 +682,7 @@ router.post('/chatMessages',
     body('message').notEmpty().withMessage('Message cannot be empty'),
     body('userId').isInt().withMessage('User ID must be a valid integer'),
     body('classroomId').isInt().withMessage('Classroom ID must be a valid integer'),
+    authenticateToken,
     handleInputErrors,
     createChatMessage
 )
@@ -550,12 +690,14 @@ router.post('/chatMessages',
 router.put('/chatMessages/:id',
     param('id').isInt().withMessage('ID not valid'),
     body('message').notEmpty().withMessage('Message cannot be empty'),
+    authenticateToken,
     handleInputErrors,
     updateChatMessage
 )
 
 router.delete('/chatMessages/:id',
     param('id').isInt().withMessage('ID not valid'),
+    authenticateToken,
     handleInputErrors,
     deleteChatMessage
 )
