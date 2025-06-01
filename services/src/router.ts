@@ -171,14 +171,12 @@ router.post('/register',
         .isLength({ min: 6 }).withMessage('Password must be at least 6 characters long'),
     body('password')
         .if(body('role').equals(UserRole.TEACHER))
-        .custom(value => {
-            if (value) throw new Error('Teachers must not provide a password.')
-            return true
-        }),
+        .notEmpty().withMessage('Password is required for teachers')
+        .isLength({ min: 6 }).withMessage('Password must be at least 6 characters long'),
     body('password_confirmation')
         .optional()
         .custom((value, { req }) => {
-            if (req.body.role === UserRole.STUDENT && value !== req.body.password) {
+            if (value !== req.body.password) {
                 throw new Error("Password confirmation must match password.")
             }
             return true

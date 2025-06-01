@@ -40,31 +40,53 @@ export const createAccount = async (req: Request, res: Response) => {
 
         const dn = `uid=${name},${process.env.LDAP_BASE_DN}`
         const entry = {
-            cn: name,
-            sn: last_names,
-            objectClass: ["inetOrgPerson", "posixAccount"],
-            uid: name,
-            mail: email,
-            userPassword: password,
+          cn: name || "",
+          sn: last_names || "",
+          mail: email || "",
+          objectClass: ["inetOrgPerson", "organizationalPerson", "person", "top"],
+          userPassword: password
         }
-
-        ldapClient.add(dn, entry, async (err) => {
+        console.log("LDAP entry to add:", entry)
+        if (!entry.cn || !entry.sn || !entry.mail) {
+          res.status(400).json({ error: "Missing required LDAP fields." })
+          return
+        }
+        ldapClient.bind(
+          process.env.LDAP_BIND_DN!,
+          process.env.LDAP_BIND_PASSWORD!,
+          (err) => {
             if (err) {
-                console.error("Error adding user to LDAP:", err)
+              console.error("LDAP bind failed:", err)
+              res.status(500).json({ error: "LDAP bind failed." })
+              return
+            }
+            ldapClient.add(dn, entry, async (addErr) => {
+              if (addErr) {
+                console.error("Error adding user to LDAP:", addErr)
                 res.status(500).json({ error: "LDAP registration failed." })
                 return
+              }
+              const user = await User.create({
+                uid: name,
+                name,
+                last_names,
+                role,
+                email,
+                confirmed: true
+              })
+              res.json({ message: "Teacher registered successfully." })
+              // Close the LDAP connection
+              ldapClient.unbind((unbindErr) => {
+                if (unbindErr) console.error("Error unbinding LDAP connection:", unbindErr)
+              })
+            })
+          }
+        )
+            } catch (error) {
+                console.error(error)
+                res.status(500).json({ error: "Internal Server Error" })
             }
-            const salt = await bcrypt.genSalt(10)
-            const hashedPassword = await bcrypt.hash(password, salt)
-            await User.create({ name, last_names, role, email, password: hashedPassword, confirmed: true })
-            res.json({ message: "Teacher registered successfully in LDAP!" })
-            return
-        })
-    } catch (error) {
-        console.error(error)
-        res.status(500).json({ error: "Internal Server Error" })
-    }
-}
+        }
 
 export const login = async (req: Request, res: Response) => {
     try {
@@ -89,18 +111,30 @@ export const login = async (req: Request, res: Response) => {
 
         // Teachers log in via email and ldap
         if (user.role === UserRole.TEACHER) {
-            const dn = `uid=${user.name},${process.env.LDAP_BASE_DN}`
+            const user = await User.findOne({ where: { email: identifier, role: UserRole.TEACHER } })
+            if (!user) {
+              res.status(401).json({ error: "Invalid credentials" })
+              return
+            }
+            const dn = `uid=${user.uid},${process.env.LDAP_BASE_DN}`
+            console.log("Trying LDAP bind with DN:", dn)
+            const ldapClient = ldap.createClient({
+              url: process.env.LDAP_URL,
+              timeout: 5000,
+              connectTimeout: 5000
+            })
             ldapClient.bind(dn, password, (err) => {
-                if (err) {
-                    console.error("LDAP authentication failed:", err)
-                    res.status(401).json({ error: "LDAP authentication failed. Check your credentials." })
-                    return
-                }
-                const token = jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET!, { expiresIn: "1h" })
-                res.json({ message: "Login successful", user, token })
-                ldapClient.unbind((unbindErr) => {
-                    if (unbindErr) console.error("Error unbinding LDAP connection:", unbindErr)
-                })
+              console.log("LDAP bind callback called")
+              if (err) {
+                console.error("LDAP authentication failed:", err)
+                res.status(401).json({ error: "LDAP authentication failed. Check your credentials." })
+                ldapClient.unbind()
+                return
+              }
+              // Success: generate token, respond, unbind
+              const token = jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET!, { expiresIn: "1h" })
+              res.json({ message: "Login successful", user, token })
+              ldapClient.unbind()
             })
             return
         }

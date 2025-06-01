@@ -62,6 +62,13 @@ class User extends Model {
     @BelongsTo(() => Classroom)
     declare classroom: Classroom
 
+    @Column({
+        type: DataType.STRING,
+        allowNull: false,
+        unique: true
+    })
+    declare uid: string
+
     @BeforeValidate
     static validateRoleFields(instance: User) {
         if (instance.role === UserRole.STUDENT) {
@@ -76,9 +83,6 @@ class User extends Model {
         if (instance.role === UserRole.TEACHER) {
             if (!instance.email) {
                 throw new Error('Teachers must have an email address.');
-            }
-            if (instance.password) {
-                throw new Error('Teachers must not have a password.');
             }
         }
     }

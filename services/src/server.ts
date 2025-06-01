@@ -5,6 +5,7 @@ import router from './router'
 import swaggerUi from 'swagger-ui-express'
 import swaggerSpec, { swaggerUiOptions } from './config/swagger'
 import db from './config/db'
+import cors from "cors"
 
 async function connectDB() {
     try {
@@ -20,6 +21,8 @@ async function connectDB() {
 connectDB()
 
 const server = express()
+
+server.use(cors({ origin: "http://localhost:5173", credentials: true }))
 
 // Read data
 server.use(express.json())
