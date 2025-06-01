@@ -6,6 +6,7 @@ import Projects from "./views/Projects";
 import LiveCode from "./views/LiveCode";
 import Settings from "./views/Settings";
 import RegisterTeacher from "./views/RegisterTeacher";
+import EmailSuccess from "./views/EmailSuccess";
 
 
 export const router = createBrowserRouter([
@@ -36,6 +37,10 @@ export const router = createBrowserRouter([
             {
                 path: 'register-teacher',
                 element: <RegisterTeacher/>
+            },
+            {
+                path: 'email-success',
+                element: <EmailSuccess/>
             }
         ]
     }

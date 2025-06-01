@@ -16,14 +16,40 @@ export const createAccount = async (req: Request, res: Response) => {
             return
         }
 
+        // Check for existing username (uid) or email
+        if (role === UserRole.TEACHER) {
+            const existingUser = await User.findOne({
+                where: {
+                    [Op.or]: [
+                        { uid: name },
+                        { email }
+                    ]
+                }
+            })
+            if (existingUser) {
+                if (existingUser.uid === name) {
+                    res.status(400).json({ error: "A user with this username already exists." })
+                    return
+                }
+                if (existingUser.email === email) {
+                    res.status(400).json({ error: "A user with this email already exists." })
+                    return
+                }
+                // fallback
+                res.status(400).json({ error: "A user with this username or email already exists." })
+                return
+            }
+        } else if (role === UserRole.STUDENT) {
+            const existingUser = await User.findOne({ where: { name } })
+            if (existingUser) {
+                res.status(400).json({ error: "A user with this username already exists." })
+                return
+            }
+        }
+
         if (role === UserRole.STUDENT) {
             if (email) {
                 res.status(400).json({ error: "Students should not provide an email address." })
-                return
-            }
-            const existingUser = await User.findOne({ where: { name } })
-            if (existingUser) {
-                res.status(400).json({ error: "Username is already in use." })
                 return
             }
             const salt = await bcrypt.genSalt(10)
@@ -63,7 +89,13 @@ export const createAccount = async (req: Request, res: Response) => {
             ldapClient.add(dn, entry, async (addErr) => {
               if (addErr) {
                 console.error("Error adding user to LDAP:", addErr)
-                res.status(500).json({ error: "LDAP registration failed." })
+                let errorMsg = "LDAP registration failed."
+                if (addErr.name === "EntryAlreadyExistsError") {
+                  errorMsg = "A user with this username already exists."
+                } else if (addErr.name === "ConstraintViolationError") {
+                  errorMsg = "Missing required LDAP fields or invalid data."
+                }
+                res.status(400).json({ error: errorMsg })
                 return
               }
               const user = await User.create({
@@ -72,10 +104,13 @@ export const createAccount = async (req: Request, res: Response) => {
                 last_names,
                 role,
                 email,
-                confirmed: true
+                confirmed: false
               })
-              res.json({ message: "Teacher registered successfully." })
-              // Close the LDAP connection
+              // Generate confirmation token
+              const token = jwt.sign({ email }, process.env.JWT_SECRET!, { expiresIn: "1d" })
+              // Send confirmation email
+              await sendConfirmationEmail(email, token)
+              res.json({ message: "Teacher registered successfully. Please check your email to confirm your account." })
               ldapClient.unbind((unbindErr) => {
                 if (unbindErr) console.error("Error unbinding LDAP connection:", unbindErr)
               })
@@ -105,7 +140,7 @@ export const login = async (req: Request, res: Response) => {
         }
 
         if (!user.confirmed) {
-            res.status(403).json({ error: "Your account is not confirmed." })
+            res.status(403).json({ error: "You must confirm your email before logging in." })
             return
         }
 
@@ -155,27 +190,28 @@ export const login = async (req: Request, res: Response) => {
 }
 
 export const confirmAccount = async (req: Request, res: Response) => {
-    try {
-        const { token } = req.query
-        if (!token) {
-            res.status(400).json({ error: "Confirmation token is required." })
-            return
-        }
-        const decoded = jwt.verify(token as string, process.env.JWT_SECRET!) as { email: string }
-        const user = await User.findOne({ where: { email: decoded.email } })
-        if (!user) {
-            res.status(404).json({ error: "User not found." })
-            return
-        }
-        if (user.confirmed) {
-            res.status(400).json({ error: "Account is already confirmed." })
-            return
-        }
-        user.confirmed = true
-        await user.save()
-        res.json({ message: "Account confirmed successfully!" })
-    } catch (error) {
-        console.error("Error confirming account:", error)
-        res.status(400).json({ error: "Invalid or expired token." })
+  try {
+    const { token } = req.query
+    if (!token) {
+      res.status(400).json({ error: "Confirmation token is required." })
+      return
     }
+    const decoded = jwt.verify(token as string, process.env.JWT_SECRET!) as { email: string }
+    const user = await User.findOne({ where: { email: decoded.email } })
+    if (!user) {
+      res.status(404).json({ error: "User not found." })
+      return
+    }
+    if (user.confirmed) {
+      res.status(400).json({ error: "Account is already confirmed." })
+      return
+    }
+    user.confirmed = true
+    await user.save()
+    // Redirect to frontend success page
+    res.redirect("http://localhost:5173/email-success")
+  } catch (error) {
+    console.error("Error confirming account:", error)
+    res.status(400).json({ error: "Invalid or expired token." })
+  }
 }

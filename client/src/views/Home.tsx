@@ -11,6 +11,11 @@ export default function Home() {
 
   if (!userData) return <p>Cargando datos...</p>;
 
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    window.location.href = "/";
+  };
+
   return (
     <>
       <div className="flex flex-col h-full">
@@ -36,7 +41,12 @@ export default function Home() {
             <button className="bg-secundary text-white rounded-2xl text-3xl font-bold">EDIT CLASS</button>
             <button className="bg-secundary text-white rounded-2xl text-3xl font-bold">REMOVE CLASS</button>
           </div>
-          <button className="bg-tertiary text-white rounded-2xl text-3xl font-bold">LOG OUT</button>
+          <button
+            className="bg-tertiary text-white rounded-2xl text-3xl font-bold"
+            onClick={handleLogout}
+          >
+            LOG OUT
+          </button>
         </div>
       </div>
     </>
