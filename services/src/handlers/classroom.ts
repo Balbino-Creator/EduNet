@@ -1,13 +1,23 @@
 import { Request, Response } from "express"
 import Classroom from "../models/Classroom.model"
+import User from "../models/User.model"
 
 export const getClassrooms = async (req: Request, res: Response) => {
-    try {
-        const classrooms = await Classroom.findAll()
-        res.json({ data: classrooms })
-    } catch (error) {
-        console.log(error)
-    }
+  try {
+    const user = (req as any).user
+
+    const classrooms = await Classroom.findAll({
+      include: [{
+        model: User,
+        where: { id: user.id },
+        attributes: []
+      }]
+    })
+
+    res.json({ data: classrooms })
+  } catch (error) {
+    res.status(500).json({ error: "Failed to load classrooms" })
+  }
 }
 
 export const getClassroomById = async (req: Request, res: Response) => {
@@ -29,12 +39,14 @@ export const getClassroomById = async (req: Request, res: Response) => {
 }
 
 export const createClassroom = async (req: Request, res: Response) => {
-    try {
-        const classroom = await Classroom.create(req.body)
-        res.json({ data: classroom })
-    } catch (error) {
-        console.log(error)
-    }
+  try {
+    const user = (req as any).user
+    const classroom = await Classroom.create(req.body)
+    await classroom.$add('users', user.id)
+    res.json({ data: classroom })
+  } catch (error) {
+    res.status(500).json({ error: "Failed to create classroom" })
+  }
 }
 
 export const updateClassroom = async (req: Request, res: Response) => {
@@ -96,4 +108,19 @@ export const deleteClassroom = async (req: Request, res: Response) => {
     } catch (error) {
         console.log(error)
     }
+}
+
+export const getClassroomUsers = async (req: Request, res: Response) => {
+  try {
+    const classroom = await Classroom.findByPk(req.params.id, {
+      include: [{ model: User, attributes: ["id", "name"] }]
+    })
+    if (!classroom) {
+        res.status(404).json({ error: "Classroom not found" })
+        return
+    }
+    res.json({ users: classroom.users })
+  } catch (e) {
+    res.status(500).json({ error: "Failed to get users" })
+  }
 }

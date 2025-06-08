@@ -1,13 +1,29 @@
 import { useState, useEffect } from "react"
 import Modal from "../components/Modal"
 
+// Centralized authenticated fetch
+async function authFetch(url, options = {}) {
+  const token = localStorage.getItem("token")
+  const res = await fetch(url, {
+    ...options,
+    headers: {
+      ...(options.headers || {}),
+      Authorization: `Bearer ${token}`
+    }
+  })
+  if (res.status === 401) {
+    localStorage.removeItem("token")
+    window.location.href = "/"
+    return null
+  }
+  return res
+}
+
 export default function Home() {
   const [userData, setUserData] = useState<any>(null)
-
   const [projects, setProjects] = useState<any[]>([])
   const [projectForm, setProjectForm] = useState({ name: "" })
   const [selectedProject, setSelectedProject] = useState<any>(null)
-
   const [students, setStudents] = useState<any[]>([])
   const [studentForm, setStudentForm] = useState({
     name: "",
@@ -17,57 +33,45 @@ export default function Home() {
   })
   const [selectedStudent, setSelectedStudent] = useState<any>(null)
   const [studentError, setStudentError] = useState("")
-
   const [classrooms, setClassrooms] = useState<any[]>([])
   const [classroomForm, setClassroomForm] = useState({ name: "", projectId: "" })
   const [selectedClassroom, setSelectedClassroom] = useState<any>(null)
-
   const [error, setError] = useState("")
   const [modal, setModal] = useState<null | string>(null)
 
   useEffect(() => {
-    const token = localStorage.getItem("token")
-    fetch("http://localhost:4000/api/me", {
-      headers: { Authorization: `Bearer ${token}` }
-    })
-      .then(response => response.json())
+    authFetch("http://localhost:4000/api/me")
+      .then(res => res && res.json())
       .then(data => {
-        if (data.error) setError(data.error)
-        else setUserData(data.data)
+        if (data && data.error) setError(data.error)
+        else if (data) setUserData(data.data)
       })
       .catch(() => setError("Failed to load user data"))
 
-    fetch("http://localhost:4000/api/projects", {
-      headers: { Authorization: `Bearer ${token}` }
-    })
-      .then(response => response.json())
-      .then(data => setProjects(data.data || []))
+    authFetch("http://localhost:4000/api/projects")
+      .then(res => res && res.json())
+      .then(data => setProjects((data && data.data) || []))
       .catch(() => setError("Failed to load projects"))
 
-    fetch("http://localhost:4000/api/students", {
-      headers: { Authorization: `Bearer ${token}` }
-    })
-      .then(response => response.json())
-      .then(data => setStudents(data.data || []))
+    authFetch("http://localhost:4000/api/students")
+      .then(res => res && res.json())
+      .then(data => setStudents((data && data.data) || []))
       .catch(() => setError("Failed to load students"))
 
-    fetch("http://localhost:4000/api/classrooms", {
-      headers: { Authorization: `Bearer ${token}` }
-    })
-      .then(response => response.json())
-      .then(data => setClassrooms(data.data || []))
+    authFetch("http://localhost:4000/api/classrooms")
+      .then(res => res && res.json())
+      .then(data => setClassrooms((data && data.data) || []))
       .catch(() => setError("Failed to load classrooms"))
   }, [])
 
   const handleCreateProject = async (e) => {
     e.preventDefault()
-    const token = localStorage.getItem("token")
-    const res = await fetch("http://localhost:4000/api/projects", {
+    const res = await authFetch("http://localhost:4000/api/projects", {
       method: "POST",
-      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name: projectForm.name })
     })
-    if (res.ok) {
+    if (res && res.ok) {
       const data = await res.json()
       setProjects([...projects, data.data])
       setModal(null)
@@ -75,22 +79,19 @@ export default function Home() {
     }
   }
   const handleDeleteProject = async (id) => {
-    const token = localStorage.getItem("token")
-    const res = await fetch(`http://localhost:4000/api/projects/${id}`, {
-      method: "DELETE",
-      headers: { Authorization: `Bearer ${token}` }
+    const res = await authFetch(`http://localhost:4000/api/projects/${id}`, {
+      method: "DELETE"
     })
-    if (res.ok) setProjects(projects.filter(p => p.id !== id))
+    if (res && res.ok) setProjects(projects.filter(p => p.id !== id))
   }
   const handleEditProject = async (e) => {
     e.preventDefault()
-    const token = localStorage.getItem("token")
-    const res = await fetch(`http://localhost:4000/api/projects/${selectedProject.id}`, {
+    const res = await authFetch(`http://localhost:4000/api/projects/${selectedProject.id}`, {
       method: "PUT",
-      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name: projectForm.name })
     })
-    if (res.ok) {
+    if (res && res.ok) {
       const data = await res.json()
       setProjects(projects.map(p => p.id === data.data.id ? data.data : p))
       setModal(null)
@@ -102,10 +103,9 @@ export default function Home() {
   const handleCreateStudent = async (e) => {
     e.preventDefault()
     setStudentError("")
-    const token = localStorage.getItem("token")
-    const res = await fetch("http://localhost:4000/api/users", {
+    const res = await authFetch("http://localhost:4000/api/users", {
       method: "POST",
-      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         name: studentForm.name,
         uid: studentForm.name,
@@ -115,33 +115,28 @@ export default function Home() {
         classroomId: Number(studentForm.classroomId)
       })
     })
-    const data = await res.json()
-    if (res.ok) {
+    const data = res && await res.json()
+    if (res && res.ok) {
       setStudents([...students, data.data])
       setModal(null)
       setStudentForm({ name: "", last_names: "", password: "", classroomId: "" })
     } else {
-      setStudentError(data.error || "The student could not be created")
+      setStudentError((data && data.error) || "The student could not be created")
     }
   }
   const handleDeleteStudent = async (id) => {
-    const token = localStorage.getItem("token")
-    const res = await fetch(`http://localhost:4000/api/users/${id}`, {
-      method: "DELETE",
-      headers: { Authorization: `Bearer ${token}` }
+    const res = await authFetch(`http://localhost:4000/api/users/${id}`, {
+      method: "DELETE"
     })
-    if (res.ok) {
-      const studentsRes = await fetch("http://localhost:4000/api/students", {
-        headers: { Authorization: `Bearer ${token}` }
-      })
-      const data = await studentsRes.json()
-      setStudents(data.data || [])
+    if (res && res.ok) {
+      const studentsRes = await authFetch("http://localhost:4000/api/students")
+      const data = studentsRes && await studentsRes.json()
+      setStudents((data && data.data) || [])
     }
   }
   const handleEditStudent = async (e) => {
     e.preventDefault()
     setStudentError("")
-    const token = localStorage.getItem("token")
     const body = {
       name: studentForm.name,
       uid: studentForm.name,
@@ -151,31 +146,30 @@ export default function Home() {
     }
     if (studentForm.password) body.password = studentForm.password
 
-    const res = await fetch(`http://localhost:4000/api/users/${selectedStudent.id}`, {
+    const res = await authFetch(`http://localhost:4000/api/users/${selectedStudent.id}`, {
       method: "PUT",
-      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body)
     })
-    const data = await res.json()
-    if (res.ok) {
+    const data = res && await res.json()
+    if (res && res.ok) {
       setStudents(students.map(s => s.id === data.data.id ? data.data : s))
       setModal(null)
       setSelectedStudent(null)
       setStudentForm({ name: "", last_names: "", password: "", classroomId: "" })
     } else {
-      setStudentError(data.error || "The student could not be edited")
+      setStudentError((data && data.error) || "The student could not be edited")
     }
   }
 
   const handleCreateClassroom = async (e) => {
     e.preventDefault()
-    const token = localStorage.getItem("token")
-    const res = await fetch("http://localhost:4000/api/classrooms", {
+    const res = await authFetch("http://localhost:4000/api/classrooms", {
       method: "POST",
-      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name: classroomForm.name, projectId: Number(classroomForm.projectId) })
     })
-    if (res.ok) {
+    if (res && res.ok) {
       const data = await res.json()
       setClassrooms([...classrooms, data.data])
       setModal(null)
@@ -183,22 +177,19 @@ export default function Home() {
     }
   }
   const handleDeleteClassroom = async (id) => {
-    const token = localStorage.getItem("token")
-    const res = await fetch(`http://localhost:4000/api/classrooms/${id}`, {
-      method: "DELETE",
-      headers: { Authorization: `Bearer ${token}` }
+    const res = await authFetch(`http://localhost:4000/api/classrooms/${id}`, {
+      method: "DELETE"
     })
-    if (res.ok) setClassrooms(classrooms.filter(c => c.id !== id))
+    if (res && res.ok) setClassrooms(classrooms.filter(c => c.id !== id))
   }
   const handleEditClassroom = async (e) => {
     e.preventDefault()
-    const token = localStorage.getItem("token")
-    const res = await fetch(`http://localhost:4000/api/classrooms/${selectedClassroom.id}`, {
+    const res = await authFetch(`http://localhost:4000/api/classrooms/${selectedClassroom.id}`, {
       method: "PUT",
-      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name: classroomForm.name })
     })
-    if (res.ok) {
+    if (res && res.ok) {
       const data = await res.json()
       setClassrooms(classrooms.map(c => c.id === data.data.id ? data.data : c))
       setModal(null)
@@ -469,7 +460,7 @@ export default function Home() {
           <form onSubmit={handleEditClassroom} className="flex flex-col gap-4">
             <input
               className="border rounded px-3 py-2"
-              placeholder="Nuevo nombre"
+              placeholder="New name"
               value={classroomForm.name}
               onChange={e => setClassroomForm({ name: e.target.value })}
               required

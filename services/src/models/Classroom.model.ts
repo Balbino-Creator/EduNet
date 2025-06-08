@@ -1,8 +1,9 @@
-import { Table, Column, Model, DataType, ForeignKey, BelongsTo, HasMany } from 'sequelize-typescript';
+import { Table, Column, Model, DataType, ForeignKey, BelongsTo, BelongsToMany, HasMany } from 'sequelize-typescript';
 import Project from './Project.model';
 import User from './User.model';
 import ChatMessage from './ChatMessage.model';
 import LiveCodeFile from './LiveCodeFile.model';
+import UserClassroom from './UserClassroom.model';
 
 @Table({
     tableName: 'classrooms'
@@ -21,7 +22,7 @@ class Classroom extends Model {
     @BelongsTo(() => Project)
     declare project: Project
 
-    @HasMany(() => User)
+    @BelongsToMany(() => User, () => UserClassroom)
     declare users: User[]
 
     @HasMany(() => ChatMessage)

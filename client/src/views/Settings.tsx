@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react"
+import { authFetch } from "../utils/authFetch"
 
 export default function Settings() {
   const [userData, setUserData] = useState<any>(null)
@@ -11,13 +12,10 @@ export default function Settings() {
   const [error, setError] = useState("")
 
   useEffect(() => {
-    const token = localStorage.getItem("token")
-    fetch("http://localhost:4000/api/me", {
-      headers: { Authorization: `Bearer ${token}` }
-    })
-      .then(response => response.json())
+    authFetch("http://localhost:4000/api/me")
+      .then(response => response && response.json())
       .then(data => {
-        if (data.error) setError(data.error)
+        if (data && data.error) setError(data.error)
         else setUserData(data.data)
       })
       .catch(() => setError("Failed to load user data"))

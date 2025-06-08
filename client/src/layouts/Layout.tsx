@@ -1,8 +1,45 @@
-import { Outlet, Link, useLocation } from "react-router-dom"
+import { useEffect, useState } from "react"
+import { Outlet, Link, useLocation, useNavigate } from "react-router-dom"
+import { authFetch } from "../utils/authFetch"
 
 export default function Layout() {
-  const isLoggedIn = !!localStorage.getItem("token")
+  const [userData, setUserData] = useState(null)
+  const [loading, setLoading] = useState(true)
   const location = useLocation()
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    // Only fetch user if not on login or register
+    if (location.pathname === "/" || location.pathname === "/register-teacher") {
+      setLoading(false)
+      return
+    }
+    const token = localStorage.getItem("token")
+    if (!token) {
+      setUserData(null)
+      setLoading(false)
+      return
+    }
+    authFetch("http://localhost:4000/api/me")
+      .then(res => res && res.json())
+      .then(data => {
+        if (data && data.data) setUserData(data.data)
+        else {
+          setUserData(null)
+          navigate("/")
+        }
+        setLoading(false)
+      })
+      .catch(() => {
+        setUserData(null)
+        setLoading(false)
+        navigate("/")
+      })
+  }, [location.pathname, navigate])
+
+  if (loading) return <div>Loading...</div>
+
+  const isLoggedIn = !!userData
 
   return (
     <div className="flex h-screen">
@@ -11,18 +48,18 @@ export default function Layout() {
         <nav className="flex-1">
           <ul className="flex flex-col space-y-5 justify-center h-fulf font-bold text-xl">
             {!isLoggedIn && (
-              <Link to={"/"}>
-                <li className={location.pathname === "/" ? "underline" : ""}>
-                  Login
-                </li>
-              </Link>
-            )}
-            {!isLoggedIn && (
-              <Link to={"/register-teacher"}>
-                <li className={location.pathname === "/register-teacher" ? "underline" : ""}>
-                  Register as Teacher
-                </li>
-              </Link>
+              <>
+                <Link to={"/"}>
+                  <li className={location.pathname === "/" ? "underline" : ""}>
+                    Login
+                  </li>
+                </Link>
+                <Link to={"/register-teacher"}>
+                  <li className={location.pathname === "/register-teacher" ? "underline" : ""}>
+                    Register as Teacher
+                  </li>
+                </Link>
+              </>
             )}
             {isLoggedIn && (
               <>

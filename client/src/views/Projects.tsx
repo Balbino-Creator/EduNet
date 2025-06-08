@@ -1,18 +1,16 @@
 import { useState, useEffect } from "react";
 import ProjectCard from "../components/ProjectCard";
+import { authFetch } from "../utils/authFetch";
 
 export default function Projects() {
   const [projectsData, setProjectsData] = useState<any[]>(null);
   const [error, setError] = useState("");
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    fetch("http://localhost:4000/api/projects", {
-      headers: { Authorization: `Bearer ${token}` }
-    })
-      .then(response => response.json())
+    authFetch("http://localhost:4000/api/projects")
+      .then(response => response && response.json())
       .then(data => {
-        if (data.error) setError(data.error)
+        if (data && data.error) setError(data.error)
         else setProjectsData(data.data)
       })
       .catch(() => setError("Failed to load projects"))

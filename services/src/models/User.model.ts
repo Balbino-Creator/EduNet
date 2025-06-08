@@ -1,5 +1,6 @@
-import { Table, Column, Model, DataType, ForeignKey, BelongsTo, BeforeValidate, Unique, AllowNull, Default } from 'sequelize-typescript';
-import Classroom from './Classroom.model';
+import { Table, Column, Model, DataType, Unique, AllowNull, Default, BelongsToMany, BeforeValidate } from 'sequelize-typescript'
+import Classroom from './Classroom.model'
+import UserClassroom from './UserClassroom.model'
 
 export enum UserRole {
     TEACHER = 'teacher',
@@ -27,7 +28,7 @@ class User extends Model {
         type: DataType.ENUM(...Object.values(UserRole)),
         allowNull: false
     })
-    declare role: UserRole;
+    declare role: UserRole
 
     @Unique
     @AllowNull(true)
@@ -50,17 +51,10 @@ class User extends Model {
         type: DataType.BOOLEAN,
         allowNull: false,
     })
-    declare confirmed: boolean;
+    declare confirmed: boolean
 
-    @ForeignKey(() => Classroom)
-    @AllowNull(true)
-    @Column({
-        type: DataType.INTEGER,
-    })
-    declare classroomId: number | null
-
-    @BelongsTo(() => Classroom)
-    declare classroom: Classroom
+    @BelongsToMany(() => Classroom, () => UserClassroom)
+    declare classrooms: Classroom[]
 
     @Column({
         type: DataType.STRING,
@@ -73,19 +67,19 @@ class User extends Model {
     static validateRoleFields(instance: User) {
         if (instance.role === UserRole.STUDENT) {
             if (instance.email) {
-                throw new Error('Students must not have an email address.');
+                throw new Error('Students must not have an email address.')
             }
             if (!instance.password) {
-                throw new Error('Students must have a password.');
+                throw new Error('Students must have a password.')
             }
         }
 
         if (instance.role === UserRole.TEACHER) {
             if (!instance.email) {
-                throw new Error('Teachers must have an email address.');
+                throw new Error('Teachers must have an email address.')
             }
         }
     }
 }
 
-export default User;
+export default User

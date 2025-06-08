@@ -1,13 +1,15 @@
 import { Router } from 'express'
 import { createUser, deleteUser, getUserById, getUsers, updtateRole, updtateUser, getCurrentUser, getStudents } from './handlers/user'
 import { createProject, deleteProject, getProjectById, getProjects, updateProject } from './handlers/project'
-import { createClassroom, deleteClassroom, getClassroomById, getClassrooms, updateClassroom } from './handlers/classroom'
+import { createClassroom, deleteClassroom, getClassroomById, getClassrooms, updateClassroom, getClassroomUsers } from './handlers/classroom'
 import { createChatMessage, deleteChatMessage, getChatMessageById, getChatMessages, updateChatMessage } from './handlers/chatMessage'
 import { body, param } from 'express-validator'
 import { UserRole } from './models/User.model'
 import { authenticateToken, handleInputErrors } from './middleware'
 import { confirmAccount, createAccount, login } from './handlers/auth'
 import { getLiveCodeState, upsertLiveCodeFile, deleteLiveCodeFile } from './handlers/liveCode'
+import Classroom from './models/Classroom.model'
+import User from './models/User.model'
 
 const router = Router()
 /**
@@ -551,7 +553,7 @@ router.delete('/projects/:id',
  *         description: Classroom not found
  */
 
-router.get('/classrooms', getClassrooms)
+router.get('/classrooms', authenticateToken, getClassrooms)
 
 router.get('/classrooms/:id',
     param('id').isInt().withMessage('ID not valid'),
@@ -796,5 +798,7 @@ router.delete('/chatMessages/:id',
 router.get('/live-code/:classroomId', authenticateToken, getLiveCodeState)
 router.post('/live-code/:classroomId/file', authenticateToken, upsertLiveCodeFile)
 router.delete('/live-code/:classroomId/file/:filename', authenticateToken, deleteLiveCodeFile)
+
+router.get('/classrooms/:id/users', authenticateToken, getClassroomUsers)
 
 export default router
