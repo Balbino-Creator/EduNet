@@ -19,9 +19,9 @@ export default function ProjectCard({ project }) {
                 No classrooms yet
               </li>
             ) : (
-              classes.map((className, i) => (
-                <li key={i} className="px-6 py-4 text-white text-2xl font-bold">
-                  {className}
+              classes.map((classroom, i) => (
+                <li key={classroom.id} className="px-6 py-4 text-white text-2xl font-bold">
+                  {classroom.name}
                 </li>
               ))
             )}

@@ -218,25 +218,36 @@ export default function Home() {
         </div>
         <h1 className="text-4xl mb-12 text-default">{t("hello")}, {userData.name}!</h1>
       </section>
-      <div className="grid grid-cols-4 gap-6 h-full flex-1">
-        <div className="col-span-3 grid grid-cols-3 gap-6">
-          <button className="bg-secundary text-white rounded-2xl text-3xl font-bold" onClick={() => setModal("createProject")}>{t("addProject")}</button>
-          <button className="bg-secundary text-white rounded-2xl text-3xl font-bold" onClick={() => setModal("editProject")}>{t("editProject")}</button>
-          <button className="bg-secundary text-white rounded-2xl text-3xl font-bold" onClick={() => setModal("deleteProject")}>{t("removeProject")}</button>
-          <button className="bg-secundary text-white rounded-2xl text-3xl font-bold" onClick={() => setModal("createStudent")}>{t("addStudent")}</button>
-          <button className="bg-secundary text-white rounded-2xl text-3xl font-bold" onClick={() => setModal("editStudent")}>{t("editStudent")}</button>
-          <button className="bg-secundary text-white rounded-2xl text-3xl font-bold" onClick={() => setModal("deleteStudent")}>{t("removeStudent")}</button>
-          <button className="bg-secundary text-white rounded-2xl text-3xl font-bold" onClick={() => setModal("createClassroom")}>{t("addClassroom")}</button>
-          <button className="bg-secundary text-white rounded-2xl text-3xl font-bold" onClick={() => setModal("editClassroom")}>{t("editClassroom")}</button>
-          <button className="bg-secundary text-white rounded-2xl text-3xl font-bold" onClick={() => setModal("deleteClassroom")}>{t("removeClassroom")}</button>
+      {userData.role === "teacher" ? (
+        <div className="grid grid-cols-4 gap-6 h-full flex-1">
+          <div className="col-span-3 grid grid-cols-3 gap-6">
+            <button className="bg-secundary text-white rounded-2xl text-3xl font-bold" onClick={() => setModal("createProject")}>{t("addProject")}</button>
+            <button className="bg-secundary text-white rounded-2xl text-3xl font-bold" onClick={() => setModal("editProject")}>{t("editProject")}</button>
+            <button className="bg-secundary text-white rounded-2xl text-3xl font-bold" onClick={() => setModal("deleteProject")}>{t("removeProject")}</button>
+            <button className="bg-secundary text-white rounded-2xl text-3xl font-bold" onClick={() => setModal("createStudent")}>{t("addStudent")}</button>
+            <button className="bg-secundary text-white rounded-2xl text-3xl font-bold" onClick={() => setModal("editStudent")}>{t("editStudent")}</button>
+            <button className="bg-secundary text-white rounded-2xl text-3xl font-bold" onClick={() => setModal("deleteStudent")}>{t("removeStudent")}</button>
+            <button className="bg-secundary text-white rounded-2xl text-3xl font-bold" onClick={() => setModal("createClassroom")}>{t("addClassroom")}</button>
+            <button className="bg-secundary text-white rounded-2xl text-3xl font-bold" onClick={() => setModal("editClassroom")}>{t("editClassroom")}</button>
+            <button className="bg-secundary text-white rounded-2xl text-3xl font-bold" onClick={() => setModal("deleteClassroom")}>{t("removeClassroom")}</button>
+          </div>
+          <button
+            className="bg-tertiary text-white rounded-2xl text-3xl font-bold"
+            onClick={handleLogout}
+          >
+            {t("logout")}
+          </button>
         </div>
-        <button
-          className="bg-tertiary text-white rounded-2xl text-3xl font-bold"
-          onClick={handleLogout}
-        >
-          {t("logout")}
-        </button>
-      </div>
+      ) : (
+        <div className="flex justify-center items-center h-full">
+          <button
+            className="bg-tertiary text-white rounded-2xl text-3xl font-bold"
+            onClick={handleLogout}
+          >
+            {t("logout")}
+          </button>
+        </div>
+      )}
 
       <Modal open={modal === "createProject"} onClose={() => setModal(null)}>
         <h2 className="text-xl font-bold mb-4">{t("createProject")}</h2>

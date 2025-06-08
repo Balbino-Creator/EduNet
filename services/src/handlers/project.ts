@@ -1,19 +1,29 @@
 import { Request, Response } from "express"
 import Project from "../models/Project.model"
 import Classroom from "../models/Classroom.model"
+import User from "../models/User.model"
 
 export const getProjects = async (req: Request, res: Response) => {
     try {
         const projects = await Project.findAll({
             include: [{
                 model: Classroom,
-                attributes: ["id", "name"]
+                attributes: ["id", "name"],
+                include: [{
+                  model: User,
+                  attributes: ["id", "name"]
+                }]
             }]
         })
+
         const data = projects.map(p => ({
             id: p.id,
             name: p.name,
-            classes: p.classrooms ? p.classrooms.map(c => c.name) : []
+            classes: p.classrooms ? p.classrooms.map(c => ({
+              id: c.id,
+              name: c.name,
+              users: c.users
+            })) : []
         }))
         res.json({ data })
     } catch (error) {

@@ -52,12 +52,14 @@ export default function Settings() {
             className="w-full px-4 py-3 rounded-md border text-white bg-gray-500 outline-none focus:border-tertiary focus:ring-tertiary focus:ring-4"
             readOnly
           />
-          <input
-            type="email"
-            value={userData.email || ""}
-            className="w-full px-4 py-3 rounded-md border text-white bg-gray-500 outline-none focus:border-tertiary focus:ring-tertiary focus:ring-4"
-            readOnly
-          />
+          {userData.role === "teacher" && (
+            <input
+              type="email"
+              value={userData.email || ""}
+              className="w-full px-4 py-3 rounded-md border text-white bg-gray-500 outline-none focus:border-tertiary focus:ring-tertiary focus:ring-4"
+              readOnly
+            />
+          )}
         </div>
       </div>
     </div>

@@ -50,6 +50,9 @@ const translations = {
     createClassroom: "Crear clase",
     editClassroom: "Editar clase",
     deleteClassroom: "Eliminar clase",
+    invalidCredentials: "Usuario o contraseña incorrectos.",
+    ldapFailed: "Autenticación LDAP fallida. Revisa tus credenciales.",
+    networkError: "Error de red, inténtalo de nuevo más tarde.",
   },
   English: {
     home: "Home",
@@ -100,6 +103,9 @@ const translations = {
     createClassroom: "Create Classroom",
     editClassroom: "Edit Classroom",
     deleteClassroom: "Delete Classroom",
+    invalidCredentials: "Invalid username or password.",
+    ldapFailed: "LDAP authentication failed. Check your credentials.",
+    networkError: "Network error, please try again later.",
   }
 }
 

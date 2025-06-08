@@ -12,6 +12,7 @@ export default function Login() {
     setRole(selectedRole)
     setIdentifier("")
     setPassword("")
+    setError("")
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -25,13 +26,16 @@ export default function Login() {
       })
       const data = await res.json()
       if (!res.ok) {
-        setError(data.error || "Login failed")
+
+        if (data.error === "Invalid credentials") setError(t("invalidCredentials"))
+        else if (data.error?.includes("LDAP authentication failed")) setError(t("ldapFailed"))
+        else setError(data.error || t("invalidCredentials"))
         return
       }
       localStorage.setItem("token", data.token)
       window.location.href = "/home"
     } catch (err) {
-      setError("Network error, please try again later.")
+      setError(t("networkError"))
     }
   }
 
@@ -74,7 +78,10 @@ export default function Login() {
                 onChange={e => setPassword(e.target.value)}
                 required
               />
-              <input className="bg-secundary w-full h-14 rounded-2xl text-white cursor-pointer" type="submit" value="Entrar" />
+              {error && (
+                <div className="text-red-500 text-center mb-2">{error}</div>
+              )}
+              <input className="bg-secundary w-full h-14 rounded-2xl text-white cursor-pointer" type="submit" value={t("login")} />
             </>
           )}
         </form>
