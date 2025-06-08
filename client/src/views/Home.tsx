@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react"
 import Modal from "../components/Modal"
+import { useAppContext } from "../contexts/AppContext"
 
 // Centralized authenticated fetch
 async function authFetch(url, options = {}) {
@@ -20,6 +21,7 @@ async function authFetch(url, options = {}) {
 }
 
 export default function Home() {
+  const { t } = useAppContext()
   const [userData, setUserData] = useState<any>(null)
   const [projects, setProjects] = useState<any[]>([])
   const [projectForm, setProjectForm] = useState({ name: "" })
@@ -199,7 +201,7 @@ export default function Home() {
   }
 
   if (error) return <p className="text-red-500">{error}</p>
-  if (!userData) return <p>Loading data...</p>
+  if (!userData) return <p>{t("loadingData")}</p>
 
   const handleLogout = () => {
     localStorage.removeItem("token")
@@ -209,48 +211,48 @@ export default function Home() {
   return (
     <div className="flex flex-col h-full">
       <section>
-        <h3 className="page-title text-default">Home</h3>
+        <h3 className="page-title text-default">{t("home")}</h3>
         <div className="flex justify-end items-center gap-3.5">
           <img src={userData.profileImage || "/teacher.jpeg"} alt="foto perfil" className="w-12 h-12 rounded-full object-cover text-default"/>
           <p className="text-default">{userData.name}</p>
         </div>
-        <h1 className="text-4xl mb-12 text-default">Hello, {userData.name}!</h1>
+        <h1 className="text-4xl mb-12 text-default">{t("hello")}, {userData.name}!</h1>
       </section>
       <div className="grid grid-cols-4 gap-6 h-full flex-1">
         <div className="col-span-3 grid grid-cols-3 gap-6">
-          <button className="bg-secundary text-white rounded-2xl text-3xl font-bold" onClick={() => setModal("createProject")}>ADD PROJECT</button>
-          <button className="bg-secundary text-white rounded-2xl text-3xl font-bold" onClick={() => setModal("editProject")}>EDIT PROJECT</button>
-          <button className="bg-secundary text-white rounded-2xl text-3xl font-bold" onClick={() => setModal("deleteProject")}>REMOVE PROJECT</button>
-          <button className="bg-secundary text-white rounded-2xl text-3xl font-bold" onClick={() => setModal("createStudent")}>ADD STUDENT</button>
-          <button className="bg-secundary text-white rounded-2xl text-3xl font-bold" onClick={() => setModal("editStudent")}>EDIT STUDENT</button>
-          <button className="bg-secundary text-white rounded-2xl text-3xl font-bold" onClick={() => setModal("deleteStudent")}>REMOVE STUDENT</button>
-          <button className="bg-secundary text-white rounded-2xl text-3xl font-bold" onClick={() => setModal("createClassroom")}>ADD CLASSROOM</button>
-          <button className="bg-secundary text-white rounded-2xl text-3xl font-bold" onClick={() => setModal("editClassroom")}>EDIT CLASSROOM</button>
-          <button className="bg-secundary text-white rounded-2xl text-3xl font-bold" onClick={() => setModal("deleteClassroom")}>REMOVE CLASSROOM</button>
+          <button className="bg-secundary text-white rounded-2xl text-3xl font-bold" onClick={() => setModal("createProject")}>{t("addProject")}</button>
+          <button className="bg-secundary text-white rounded-2xl text-3xl font-bold" onClick={() => setModal("editProject")}>{t("editProject")}</button>
+          <button className="bg-secundary text-white rounded-2xl text-3xl font-bold" onClick={() => setModal("deleteProject")}>{t("removeProject")}</button>
+          <button className="bg-secundary text-white rounded-2xl text-3xl font-bold" onClick={() => setModal("createStudent")}>{t("addStudent")}</button>
+          <button className="bg-secundary text-white rounded-2xl text-3xl font-bold" onClick={() => setModal("editStudent")}>{t("editStudent")}</button>
+          <button className="bg-secundary text-white rounded-2xl text-3xl font-bold" onClick={() => setModal("deleteStudent")}>{t("removeStudent")}</button>
+          <button className="bg-secundary text-white rounded-2xl text-3xl font-bold" onClick={() => setModal("createClassroom")}>{t("addClassroom")}</button>
+          <button className="bg-secundary text-white rounded-2xl text-3xl font-bold" onClick={() => setModal("editClassroom")}>{t("editClassroom")}</button>
+          <button className="bg-secundary text-white rounded-2xl text-3xl font-bold" onClick={() => setModal("deleteClassroom")}>{t("removeClassroom")}</button>
         </div>
         <button
           className="bg-tertiary text-white rounded-2xl text-3xl font-bold"
           onClick={handleLogout}
         >
-          LOG OUT
+          {t("logout")}
         </button>
       </div>
 
       <Modal open={modal === "createProject"} onClose={() => setModal(null)}>
-        <h2 className="text-xl font-bold mb-4">Create Project</h2>
+        <h2 className="text-xl font-bold mb-4">{t("createProject")}</h2>
         <form onSubmit={handleCreateProject} className="flex flex-col gap-4">
           <input
             className="border rounded px-3 py-2"
-            placeholder="Project Name"
+            placeholder={t("projectName")}
             value={projectForm.name}
             onChange={e => setProjectForm({ name: e.target.value })}
             required
           />
-          <button className="bg-primary text-white px-4 py-2 rounded" type="submit">Create</button>
+          <button className="bg-primary text-white px-4 py-2 rounded" type="submit">{t("create")}</button>
         </form>
       </Modal>
       <Modal open={modal === "deleteProject"} onClose={() => setModal(null)}>
-        <h2 className="text-xl font-bold mb-4">Delete Project</h2>
+        <h2 className="text-xl font-bold mb-4">{t("deleteProject")}</h2>
         <ul className="space-y-2">
           {projects.map(p => (
             <li key={p.id} className="flex justify-between items-center">
@@ -261,7 +263,7 @@ export default function Home() {
         </ul>
       </Modal>
       <Modal open={modal === "editProject"} onClose={() => { setModal(null); setSelectedProject(null); setProjectForm({ name: "" }) }}>
-        <h2 className="text-xl font-bold mb-4">Edit Project</h2>
+        <h2 className="text-xl font-bold mb-4">{t("editProject")}</h2>
         {!selectedProject ? (
           <ul className="space-y-2">
             {projects.map(p => (
@@ -291,18 +293,18 @@ export default function Home() {
       </Modal>
 
       <Modal open={modal === "createStudent"} onClose={() => setModal(null)}>
-        <h2 className="text-xl font-bold mb-4">Create Student</h2>
+        <h2 className="text-xl font-bold mb-4">{t("createStudent")}</h2>
         <form onSubmit={handleCreateStudent} className="flex flex-col gap-4">
           <input
             className="border rounded px-3 py-2"
-            placeholder="Username"
+            placeholder={t("user")}
             value={studentForm.name}
             onChange={e => setStudentForm(f => ({ ...f, name: e.target.value }))}
             required
           />
           <input
             className="border rounded px-3 py-2"
-            placeholder="Last Name"
+            placeholder={t("lastName")}
             value={studentForm.last_names}
             onChange={e => setStudentForm(f => ({ ...f, last_names: e.target.value }))}
             required
@@ -310,7 +312,7 @@ export default function Home() {
           <input
             className="border rounded px-3 py-2"
             type="password"
-            placeholder="Password"
+            placeholder={t("password")}
             value={studentForm.password}
             onChange={e => setStudentForm(f => ({ ...f, password: e.target.value }))}
             required
@@ -321,17 +323,17 @@ export default function Home() {
             onChange={e => setStudentForm(f => ({ ...f, classroomId: e.target.value }))}
             required
           >
-            <option value="">Select a classroom</option>
+            <option value="">{t("selectClassroom")}</option>
             {classrooms.map(c => (
               <option key={c.id} value={c.id}>{c.name}</option>
             ))}
           </select>
           {studentError && <div className="text-red-500">{studentError}</div>}
-          <button className="bg-primary text-white px-4 py-2 rounded" type="submit">Create</button>
+          <button className="bg-primary text-white px-4 py-2 rounded" type="submit">{t("create")}</button>
         </form>
       </Modal>
       <Modal open={modal === "deleteStudent"} onClose={() => setModal(null)}>
-        <h2 className="text-xl font-bold mb-4">Delete Student</h2>
+        <h2 className="text-xl font-bold mb-4">{t("deleteStudent")}</h2>
         <ul className="space-y-2">
           {students.map(s => (
             <li key={s.id} className="flex justify-between items-center">
@@ -342,7 +344,7 @@ export default function Home() {
         </ul>
       </Modal>
       <Modal open={modal === "editStudent"} onClose={() => { setModal(null); setSelectedStudent(null); setStudentForm({ name: "", last_names: "", password: "", classroomId: "" }) }}>
-        <h2 className="text-xl font-bold mb-4">Edit Student</h2>
+        <h2 className="text-xl font-bold mb-4">{t("editStudent")}</h2>
         {!selectedStudent ? (
           <ul className="space-y-2">
             {students.map(s => (
@@ -406,7 +408,7 @@ export default function Home() {
       </Modal>
 
       <Modal open={modal === "createClassroom"} onClose={() => setModal(null)}>
-        <h2 className="text-xl font-bold mb-4">Create Classroom</h2>
+        <h2 className="text-xl font-bold mb-4">{t("createClassroom")}</h2>
         <form onSubmit={handleCreateClassroom} className="flex flex-col gap-4">
           <input
             className="border rounded px-3 py-2"
@@ -430,7 +432,7 @@ export default function Home() {
         </form>
       </Modal>
       <Modal open={modal === "deleteClassroom"} onClose={() => setModal(null)}>
-        <h2 className="text-xl font-bold mb-4">Delete Classroom</h2>
+        <h2 className="text-xl font-bold mb-4">{t("deleteClassroom")}</h2>
         <ul className="space-y-2">
           {classrooms.map(c => (
             <li key={c.id} className="flex justify-between items-center">
@@ -441,7 +443,7 @@ export default function Home() {
         </ul>
       </Modal>
       <Modal open={modal === "editClassroom"} onClose={() => { setModal(null); setSelectedClassroom(null); setClassroomForm({ name: "" }) }}>
-        <h2 className="text-xl font-bold mb-4">Edit Classroom</h2>
+        <h2 className="text-xl font-bold mb-4">{t("editClassroom")}</h2>
         {!selectedClassroom ? (
           <ul className="space-y-2">
             {classrooms.map(c => (

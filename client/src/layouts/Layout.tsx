@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react"
 import { Outlet, Link, useLocation, useNavigate } from "react-router-dom"
 import { authFetch } from "../utils/authFetch"
+import { useAppContext } from "../contexts/AppContext"
 
 export default function Layout() {
   const [userData, setUserData] = useState(null)
   const [loading, setLoading] = useState(true)
   const location = useLocation()
   const navigate = useNavigate()
+  const { t } = useAppContext()
 
   useEffect(() => {
     // Only fetch user if not on login or register
@@ -51,12 +53,12 @@ export default function Layout() {
               <>
                 <Link to={"/"}>
                   <li className={location.pathname === "/" ? "underline" : ""}>
-                    Login
+                    {t("login")}
                   </li>
                 </Link>
                 <Link to={"/register-teacher"}>
                   <li className={location.pathname === "/register-teacher" ? "underline" : ""}>
-                    Register as Teacher
+                    {t("registerTeacher")}
                   </li>
                 </Link>
               </>
@@ -65,22 +67,22 @@ export default function Layout() {
               <>
                 <Link to={"/home"}>
                   <li className={location.pathname === "/home" ? "underline" : ""}>
-                    Home
+                    {t("home")}
                   </li>
                 </Link>
                 <Link to={"/projects"}>
                   <li className={location.pathname === "/projects" ? "underline" : ""}>
-                    Projects
+                    {t("projects")}
                   </li>
                 </Link>
                 <Link to={"/live-code"}>
                   <li className={location.pathname === "/live-code" ? "underline" : ""}>
-                    Live Code
+                    {t("liveCode")}
                   </li>
                 </Link>
                 <Link to={"/settings"}>
                   <li className={location.pathname === "/settings" ? "underline" : ""}>
-                    Settings
+                    {t("settings")}
                   </li>
                 </Link>
               </>

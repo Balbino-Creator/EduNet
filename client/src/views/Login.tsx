@@ -1,6 +1,8 @@
 import { useState } from "react"
+import { useAppContext } from "../contexts/AppContext"
 
 export default function Login() {
+  const { t } = useAppContext()
   const [role, setRole] = useState<"teacher" | "student" | null>(null)
   const [identifier, setIdentifier] = useState("")
   const [password, setPassword] = useState("")
@@ -35,7 +37,7 @@ export default function Login() {
 
   return (
     <>
-      <h3 className="page-title text-default">Login</h3>
+      <h3 className="page-title text-default">{t("login")}</h3>
       <section className="w-full h-full flex justify-center items-center">
         <form onSubmit={handleSubmit} className="w-[600px] h-[600px] bg-tertiary rounded-2xl p-12 flex flex-col justify-between">
           <div className="flex justify-between">
@@ -59,7 +61,7 @@ export default function Login() {
               <input
                 className="bg-white w-full h-14 rounded-2xl pl-4 focus:outline-none focus:ring-4 focus:ring-secundary text-default"
                 type={role === "teacher" ? "email" : "text"}
-                placeholder={role === "teacher" ? "Email" : "User"}
+                placeholder={role === "teacher" ? t("email") : t("user")}
                 value={identifier}
                 onChange={e => setIdentifier(e.target.value)}
                 required
