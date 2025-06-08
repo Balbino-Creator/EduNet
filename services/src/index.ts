@@ -1,16 +1,14 @@
-import express from "express"
+import server from "./server"
 import http from "http"
 import { Server } from "socket.io"
-import router from "./router"
 import ChatMessage from "./models/ChatMessage.model"
 import User from "./models/User.model"
+import chokidar from "chokidar"
+import path from "path"
+import { sharedDir } from "./handlers/fileBrowser"
 
-const app = express()
-app.use(express.json())
-app.use("/api", router)
-
-const server = http.createServer(app)
-const io = new Server(server, { cors: { origin: "*" } })
+const httpServer = http.createServer(server)
+const io = new Server(httpServer, { cors: { origin: "*" } })
 
 // Presence per classroom
 const classroomUsers: Record<string, { socketId: string, user: { id: number, name: string } }[]> = {}
@@ -61,8 +59,24 @@ io.on("connection", socket => {
   })
 })
 
-const port = process.env.PORT || 4000
+// Watch for file changes in the shared directory
+let watcher = chokidar.watch(sharedDir, { ignoreInitial: true, awaitWriteFinish: true })
+watcher.on("change", (filePath) => {
+  const relPath = path.relative(sharedDir, filePath).replace(/\\/g, "/")
+  io.emit("fileChanged", relPath)
+})
 
-server.listen(port, () => {
-    console.log(`REST API at port ${port}`)
+export function restartWatcher() {
+  watcher.close().then(() => {
+    watcher = chokidar.watch(sharedDir, { ignoreInitial: true, awaitWriteFinish: true })
+    watcher.on("change", (filePath) => {
+      const relPath = path.relative(sharedDir, filePath).replace(/\\/g, "/")
+      io.emit("fileChanged", relPath)
+    })
+  })
+}
+
+const port = process.env.PORT || 4000
+httpServer.listen(port, () => {
+  console.log(`REST API and WebSocket server running at port ${port}`)
 })

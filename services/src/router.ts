@@ -8,8 +8,7 @@ import { UserRole } from './models/User.model'
 import { authenticateToken, handleInputErrors } from './middleware'
 import { confirmAccount, createAccount, login } from './handlers/auth'
 import { getLiveCodeState, upsertLiveCodeFile, deleteLiveCodeFile } from './handlers/liveCode'
-import Classroom from './models/Classroom.model'
-import User from './models/User.model'
+import { setSharedDirAndRestartWatcher, getDirectoryTree, getFileContent } from "./handlers/fileBrowser"
 
 const router = Router()
 /**
@@ -800,5 +799,9 @@ router.post('/live-code/:classroomId/file', authenticateToken, upsertLiveCodeFil
 router.delete('/live-code/:classroomId/file/:filename', authenticateToken, deleteLiveCodeFile)
 
 router.get('/classrooms/:id/users', authenticateToken, getClassroomUsers)
+
+router.post("/files/share", authenticateToken, setSharedDirAndRestartWatcher)
+router.get("/files/tree", authenticateToken, getDirectoryTree)
+router.get("/files/content", authenticateToken, getFileContent)
 
 export default router

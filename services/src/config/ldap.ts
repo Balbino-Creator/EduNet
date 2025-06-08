@@ -1,9 +1,13 @@
 import ldap from "ldapjs";
 
-const ldapClient = ldap.createClient({
-  url: process.env.LDAP_URL,
-  timeout: 5000, // 5 seconds
-  connectTimeout: 5000
-})
-
-export default ldapClient;
+export function getLdapClient() {
+  const url = process.env.LDAP_URL;
+  if (!url) {
+    throw new Error("LDAP_URL is not defined in environment variables");
+  }
+  return ldap.createClient({
+    url,
+    timeout: 5000,
+    connectTimeout: 5000,
+  });
+}

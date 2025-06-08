@@ -1,11 +1,10 @@
 import { Request, Response } from "express"
-import ldap from "ldapjs"
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 import User, { UserRole } from "../models/User.model"
 import { Op } from "sequelize"
 import { sendConfirmationEmail } from "../config/emailService"
-import ldapClient from "../config/ldap"
+import { getLdapClient } from "../config/ldap"
 
 export const createAccount = async (req: Request, res: Response) => {
     try {
@@ -54,7 +53,13 @@ export const createAccount = async (req: Request, res: Response) => {
             }
             const salt = await bcrypt.genSalt(10)
             const hashedPassword = await bcrypt.hash(password, salt)
-            const user = await User.create({ name, last_names, role, password: hashedPassword, confirmed: true })
+            const user = await User.create({
+                name,
+                last_names,
+                role,
+                password: hashedPassword,
+                confirmed: true
+            })
             res.json({ message: "Student registered successfully." })
             return
         }
@@ -77,6 +82,7 @@ export const createAccount = async (req: Request, res: Response) => {
           res.status(400).json({ error: "Missing required LDAP fields." })
           return
         }
+        const ldapClient = getLdapClient();
         ldapClient.bind(
           process.env.LDAP_BIND_DN!,
           process.env.LDAP_BIND_PASSWORD!,
@@ -153,11 +159,7 @@ export const login = async (req: Request, res: Response) => {
             }
             const dn = `uid=${user.uid},${process.env.LDAP_BASE_DN}`
             console.log("Trying LDAP bind with DN:", dn)
-            const ldapClient = ldap.createClient({
-              url: process.env.LDAP_URL,
-              timeout: 5000,
-              connectTimeout: 5000
-            })
+            const ldapClient = getLdapClient();
             ldapClient.bind(dn, password, (err) => {
               console.log("LDAP bind callback called")
               if (err) {

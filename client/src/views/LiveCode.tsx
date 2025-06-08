@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import LiveChat from "../components/LiveChat";
 import { authFetch } from "../utils/authFetch";
+import ShareDirectory from "../components/ShareDirectory";
+import FileBrowser from "../components/FileBrowser";
 
 export default function LiveCode() {
   const [userClassrooms, setUserClassrooms] = useState<any[]>([]);
@@ -45,6 +47,10 @@ export default function LiveCode() {
       {selectedClassroomId && userData && (
         <div className="flex space-x-6 h-full">
           <LiveChat classroomId={selectedClassroomId} user={userData} />
+          {userData?.role === "teacher" && (
+            <ShareDirectory onShared={() => window.location.reload()} />
+          )}
+          <FileBrowser />
         </div>
       )}
     </div>
