@@ -42,14 +42,14 @@ export default function Login() {
             <img
               className={`w-52 h-44 rounded-2xl cursor-pointer ${role === "teacher" ? "ring-4 ring-blue-500" : ""}`}
               src="/teacher.jpeg"
-              alt="imagen teacher"
+              alt="image teacher"
               tabIndex={0}
               onClick={() => handleRoleSelect("teacher")}
             />
             <img
               className={`w-52 h-44 rounded-2xl cursor-pointer ${role === "student" ? "ring-4 ring-green-500" : ""}`}
               src="/children.jpg"
-              alt="imagen niño"
+              alt="image child"
               tabIndex={0}
               onClick={() => handleRoleSelect("student")}
             />
@@ -67,7 +67,7 @@ export default function Login() {
               <input
                 className="bg-white w-full h-14 rounded-2xl pl-4 focus:outline-none focus:ring-4 focus:ring-secundary text-default"
                 type="password"
-                placeholder="Contraseña"
+                placeholder="Password"
                 value={password}
                 onChange={e => setPassword(e.target.value)}
                 required

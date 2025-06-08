@@ -2,6 +2,7 @@ import { Table, Column, Model, DataType, ForeignKey, BelongsTo, HasMany } from '
 import Project from './Project.model';
 import User from './User.model';
 import ChatMessage from './ChatMessage.model';
+import LiveCodeFile from './LiveCodeFile.model';
 
 @Table({
     tableName: 'classrooms'
@@ -14,7 +15,7 @@ class Classroom extends Model {
     declare name: string
 
     @ForeignKey(() => Project)
-    @Column({ type: DataType.INTEGER })
+    @Column({ type: DataType.INTEGER, onDelete: 'CASCADE' })
     declare projectId: number
 
     @BelongsTo(() => Project)
@@ -25,6 +26,9 @@ class Classroom extends Model {
 
     @HasMany(() => ChatMessage)
     declare chatMessages: ChatMessage[]
+
+    @HasMany(() => LiveCodeFile)
+    declare liveCodeFiles: LiveCodeFile[]
 }
 
 export default Classroom

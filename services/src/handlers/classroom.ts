@@ -14,7 +14,7 @@ export const getClassroomById = async (req: Request, res: Response) => {
     try {
         const { id } = req.params
         const classroom = await Classroom.findByPk(id, {
-            include: ['project', 'users', 'chatMessages'] // Cargando relaciones
+            include: ['project', 'users', 'chatMessages']
         })
 
         if (!classroom) {

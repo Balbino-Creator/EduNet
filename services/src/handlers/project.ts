@@ -1,12 +1,23 @@
 import { Request, Response } from "express"
 import Project from "../models/Project.model"
+import Classroom from "../models/Classroom.model"
 
 export const getProjects = async (req: Request, res: Response) => {
     try {
-        const projects = await Project.findAll()
-        res.json({ data: projects })
+        const projects = await Project.findAll({
+            include: [{
+                model: Classroom,
+                attributes: ["id", "name"]
+            }]
+        })
+        const data = projects.map(p => ({
+            id: p.id,
+            name: p.name,
+            classes: p.classrooms ? p.classrooms.map(c => c.name) : []
+        }))
+        res.json({ data })
     } catch (error) {
-        console.log(error)
+        res.status(500).json({ error: "Failed to load projects" })
     }
 }
 

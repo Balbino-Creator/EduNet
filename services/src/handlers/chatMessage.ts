@@ -14,7 +14,7 @@ export const getChatMessageById = async (req: Request, res: Response) => {
     try {
         const { id } = req.params
         const chatMessage = await ChatMessage.findByPk(id, {
-            include: ['user', 'classroom'] // Cargando relaciones
+            include: ['user', 'classroom']
         })
 
         if (!chatMessage) {

@@ -10,6 +10,20 @@ export const getUsers = async (req: Request, res: Response) => {
     }
 }
 
+export const getCurrentUser = async (req: Request, res: Response) => {
+    try {
+        const userId = (req as any).user.id
+        const user = await User.findByPk(userId)
+        if (!user) {
+            res.status(404).json({ error: "User not found" })
+            return
+        }
+        res.json({ data: user })
+    } catch (error) {
+        res.status(500).json({ error: "Internal Server Error" })
+    }
+}
+
 export const getUserById = async (req: Request, res: Response) => {
     try {
         const { id } = req.params
@@ -94,3 +108,12 @@ export const deleteUser = async (req: Request, res: Response) => {
         console.log(error)
     }
 }
+
+export const getStudents = async (req: Request, res: Response) => {
+  try {
+    const students = await User.findAll({ where: { role: "student" } });
+    res.json({ data: students });
+  } catch (error) {
+    res.status(500).json({ error: "Failed to load students" });
+  }
+};

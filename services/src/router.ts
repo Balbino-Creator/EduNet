@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { createUser, deleteUser, getUserById, getUsers, updtateRole, updtateUser } from './handlers/user'
+import { createUser, deleteUser, getUserById, getUsers, updtateRole, updtateUser, getCurrentUser, getStudents } from './handlers/user'
 import { createProject, deleteProject, getProjectById, getProjects, updateProject } from './handlers/project'
 import { createClassroom, deleteClassroom, getClassroomById, getClassrooms, updateClassroom } from './handlers/classroom'
 import { createChatMessage, deleteChatMessage, getChatMessageById, getChatMessages, updateChatMessage } from './handlers/chatMessage'
@@ -7,6 +7,7 @@ import { body, param } from 'express-validator'
 import { UserRole } from './models/User.model'
 import { authenticateToken, handleInputErrors } from './middleware'
 import { confirmAccount, createAccount, login } from './handlers/auth'
+import { getLiveCodeState, upsertLiveCodeFile, deleteLiveCodeFile } from './handlers/liveCode'
 
 const router = Router()
 /**
@@ -336,6 +337,10 @@ router.delete('/users/:id',
     handleInputErrors,
     deleteUser
 )
+
+router.get('/me', authenticateToken, getCurrentUser)
+
+router.get("/students", authenticateToken, getStudents)
 
 // Projects endpoints
 
@@ -699,5 +704,97 @@ router.delete('/chatMessages/:id',
     handleInputErrors,
     deleteChatMessage
 )
+
+// Live Code endpoints
+
+/**
+ * @swagger
+ * /api/live-code/{classroomId}:
+ *   get:
+ *     tags: [LiveCode]
+ *     summary: Get live code state for a classroom
+ *     parameters:
+ *       - in: path
+ *         name: classroomId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Returns live code state
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 classroomId:
+ *                   type: integer
+ *                   description: The classroom ID
+ *                   example: 1
+ *                 code:
+ *                   type: string
+ *                   description: The live code
+ *                   example: "print('Hello, world!')"
+ *                 language:
+ *                   type: string
+ *                   description: The programming language
+ *                   example: "python"
+ *       404:
+ *         description: Classroom not found
+ *
+ * /api/live-code/{classroomId}/file:
+ *   post:
+ *     tags: [LiveCode]
+ *     summary: Upload or update a live code file
+ *     parameters:
+ *       - in: path
+ *         name: classroomId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               file:
+ *                 type: string
+ *                 format: binary
+ *                 description: The live code file to upload
+ *     responses:
+ *       201:
+ *         description: Live code file uploaded successfully
+ *       400:
+ *         description: Invalid input
+ *       404:
+ *         description: Classroom not found
+ *
+ * /api/live-code/{classroomId}/file/{filename}:
+ *   delete:
+ *     tags: [LiveCode]
+ *     summary: Delete a live code file
+ *     parameters:
+ *       - in: path
+ *         name: classroomId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *       - in: path
+ *         name: filename
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Live code file deleted successfully
+ *       404:
+ *         description: Live code file or classroom not found
+ */
+
+router.get('/live-code/:classroomId', authenticateToken, getLiveCodeState)
+router.post('/live-code/:classroomId/file', authenticateToken, upsertLiveCodeFile)
+router.delete('/live-code/:classroomId/file/:filename', authenticateToken, deleteLiveCodeFile)
 
 export default router
