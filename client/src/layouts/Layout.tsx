@@ -1,14 +1,14 @@
-import { useEffect, useState } from "react"
 import { Outlet, Link, useLocation, useNavigate } from "react-router-dom"
-import { authFetch } from "../utils/authFetch"
 import { useAppContext } from "../contexts/AppContext"
+import { useEffect, useState } from "react"
+import { authFetch } from "../utils/authFetch"
 
 export default function Layout() {
   const [userData, setUserData] = useState(null)
   const [loading, setLoading] = useState(true)
   const location = useLocation()
   const navigate = useNavigate()
-  const { t } = useAppContext()
+  const { t, darkMode } = useAppContext()
 
   useEffect(() => {
     // Only fetch user if not on login or register
@@ -39,16 +39,19 @@ export default function Layout() {
       })
   }, [location.pathname, navigate])
 
-  if (loading) return <div>Loading...</div>
+  if (loading) return <div className="flex items-center justify-center h-screen text-3xl text-primary animate-pulse">Loading...</div>
 
   const isLoggedIn = !!userData
 
   return (
-    <div className="flex h-screen">
-      <aside className="w-80 pl-12 pt-12 bg-primary flex flex-col text-white">
-        <h2 className="uppercase text-6xl mb-16 font-bold underline">EduNet</h2>
+    <div className={`flex h-screen transition-colors duration-500 ${darkMode ? "bg-[#232946]" : ""}`}>
+      <aside className={`w-80 pl-12 pt-12 shadow-2xl rounded-tr-3xl rounded-br-3xl flex flex-col text-primary animate-slide-in-left transition-all duration-700
+        ${darkMode ? "bg-[#232946]/90 text-white" : "bg-white/80"}`}>
+        <h2 className="uppercase text-5xl mb-16 font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-primary to-tertiary drop-shadow-lg select-none">
+          EduNet
+        </h2>
         <nav className="flex-1">
-          <ul className="flex flex-col space-y-5 justify-center h-fulf font-bold text-xl">
+          <ul className="flex flex-col space-y-5 justify-center h-full font-bold text-xl">
             {!isLoggedIn && (
               <>
                 <Link to={"/"}>
@@ -90,7 +93,7 @@ export default function Layout() {
           </ul>
         </nav>
       </aside>
-      <main className="flex-1 p-20">
+      <main className="flex-1 p-10 md:p-20 overflow-y-auto transition-all duration-500">
         <Outlet />
       </main>
     </div>

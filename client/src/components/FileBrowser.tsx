@@ -90,24 +90,24 @@ export default function FileBrowser() {
   }, [selectedFile])
 
   return (
-    <div className="w-1/3 bg-white p-4 rounded-2xl flex flex-col max-h-[70vh] min-h-[400px]">
+    <div className="w-1/3 bg-white/80 dark:bg-[#232946]/90 p-4 rounded-2xl flex flex-col max-h-[70vh] min-h-[400px] shadow-lg backdrop-blur-md animate-fade-in">
       <Breadcrumb path={currentPath} onNavigate={setCurrentPath} />
       <ul className="mb-4 flex-1 overflow-y-auto">
         {currentChildren.map(item =>
           item.type === "directory" ? (
-            <li key={item.path} className="font-bold cursor-pointer text-blue-700" onClick={() => setCurrentPath(item.path)}>
+            <li key={item.path} className="font-bold cursor-pointer text-blue-700 hover:underline transition-all" onClick={() => setCurrentPath(item.path)}>
               📁 {item.name}
             </li>
           ) : (
-            <li key={item.path} className="cursor-pointer" onClick={() => handleFileClick(item)}>
+            <li key={item.path} className="cursor-pointer hover:bg-primary/20 rounded px-2 transition-all" onClick={() => handleFileClick(item)}>
               📄 {item.name}
             </li>
           )
         )}
       </ul>
       {selectedFile && (
-        <div className="bg-gray-100 rounded-lg p-2 overflow-auto" style={{ maxHeight: "30vh" }}>
-          <div className="font-mono text-xs whitespace-pre-wrap">{fileContent}</div>
+        <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-2 overflow-auto shadow-inner" style={{ maxHeight: "30vh" }}>
+          <div className="font-mono text-xs whitespace-pre-wrap text-default dark:text-white">{fileContent}</div>
         </div>
       )}
     </div>

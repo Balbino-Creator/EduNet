@@ -3,9 +3,9 @@ import { authFetch } from "../utils/authFetch"
 import { useAppContext } from "../contexts/AppContext"
 
 export default function Settings() {
+  const { darkMode, setDarkMode, language, setLanguage, t } = useAppContext()
   const [userData, setUserData] = useState<any>(null)
   const [error, setError] = useState("")
-  const { darkMode, setDarkMode, language, setLanguage, t } = useAppContext()
 
   useEffect(() => {
     authFetch("http://localhost:4000/api/me")
@@ -21,20 +21,25 @@ export default function Settings() {
   if (!userData) return <p>{t("loading")}</p>
 
   return (
-    <div className="flex flex-col space-y-6 text-default">
-      <h3 className="page-title text-default">{t("settings")}</h3>
-      <div className="rounded-2xl space-y-4">
+    <div className="flex flex-col items-center justify-center min-h-[80vh] animate-fade-in">
+      <div className="w-full max-w-xl bg-white/80 dark:bg-[#232946]/90 rounded-3xl shadow-2xl p-10 flex flex-col gap-8 backdrop-blur-md">
+        <h3 className="text-3xl font-bold text-center text-primary dark:text-tertiary mb-6">{t("settings")}</h3>
         {/* Dark mode */}
         <div className="flex justify-between items-center">
           <span className="font-medium">{t("darkMode")}</span>
-          <button>{darkMode ? t("deactivate") : t("activate")}</button>
+          <button
+            className={`w-16 h-8 flex items-center rounded-full p-1 duration-300 ease-in-out ${darkMode ? "bg-primary" : "bg-gray-300"}`}
+            onClick={() => setDarkMode(!darkMode)}
+          >
+            <span className={`bg-white w-6 h-6 rounded-full shadow-md transform duration-300 ${darkMode ? "translate-x-8" : ""}`}></span>
+          </button>
         </div>
 
         {/* Language */}
         <div className="flex justify-between items-center">
           <span className="font-medium">{t("language")}</span>
           <select
-            className="px-3 py-2 rounded-md border bg-gray-500 text-white focus:border-secbg-secundary focus:ring-secbg-secundary"
+            className="px-3 py-2 rounded-md border bg-gray-500 text-white focus:border-primary focus:ring-primary"
             value={language}
             onChange={e => setLanguage(e.target.value)}
           >

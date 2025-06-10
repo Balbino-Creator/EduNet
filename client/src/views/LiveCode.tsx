@@ -3,8 +3,10 @@ import LiveChat from "../components/LiveChat";
 import { authFetch } from "../utils/authFetch";
 import ShareDirectory from "../components/ShareDirectory";
 import FileBrowser from "../components/FileBrowser";
+import { useAppContext } from "../contexts/AppContext";
 
 export default function LiveCode() {
+  const { t } = useAppContext();
   const [userClassrooms, setUserClassrooms] = useState<any[]>([]);
   const [selectedClassroomId, setSelectedClassroomId] = useState<string>("");
   const [userData, setUserData] = useState(null);
@@ -28,14 +30,14 @@ export default function LiveCode() {
   }, []);
 
   if (error) return <p className="text-red-500">{error}</p>;
-  if (userClassrooms.length === 0) return <p>You are not assigned to any classroom</p>;
+  if (userClassrooms.length === 0) return <p className="text-xl text-default">{t("noClassrooms") || "You are not assigned to any classroom"}</p>;
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full animate-fade-in">
       <section className="mb-12">
-        <h3 className="page-title text-default">Live Code</h3>
+        <h3 className="page-title text-default">{t("liveCode")}</h3>
         <select
-          className="border rounded px-3 py-2 mt-4"
+          className="border rounded px-3 py-2 mt-4 bg-white/80 dark:bg-gray-800 text-default dark:text-white shadow-md focus:ring-2 focus:ring-primary transition-all duration-300"
           value={selectedClassroomId}
           onChange={e => setSelectedClassroomId(e.target.value)}
         >

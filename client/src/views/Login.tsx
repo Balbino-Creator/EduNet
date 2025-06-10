@@ -40,52 +40,53 @@ export default function Login() {
   }
 
   return (
-    <>
-      <h3 className="page-title text-default">{t("login")}</h3>
-      <section className="w-full h-full flex justify-center items-center">
-        <form onSubmit={handleSubmit} className="w-[600px] h-[600px] bg-tertiary rounded-2xl p-12 flex flex-col justify-between">
-          <div className="flex justify-between">
-            <img
-              className={`w-52 h-44 rounded-2xl cursor-pointer ${role === "teacher" ? "ring-4 ring-blue-500" : ""}`}
-              src="/teacher.jpeg"
-              alt="image teacher"
-              tabIndex={0}
-              onClick={() => handleRoleSelect("teacher")}
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-primary/60 to-tertiary/60">
+      <form
+        onSubmit={handleSubmit}
+        className="w-[400px] bg-white/80 dark:bg-[#232946]/90 rounded-3xl shadow-2xl p-10 flex flex-col gap-6 animate-fade-in backdrop-blur-md"
+      >
+        <h3 className="text-3xl font-bold text-center text-primary dark:text-tertiary mb-6">{t("login")}</h3>
+        <div className="flex justify-between">
+          <img
+            className={`w-52 h-44 rounded-2xl cursor-pointer ${role === "teacher" ? "ring-4 ring-blue-500" : ""}`}
+            src="/teacher.jpeg"
+            alt="image teacher"
+            tabIndex={0}
+            onClick={() => handleRoleSelect("teacher")}
+          />
+          <img
+            className={`w-52 h-44 rounded-2xl cursor-pointer ${role === "student" ? "ring-4 ring-green-500" : ""}`}
+            src="/children.jpg"
+            alt="image child"
+            tabIndex={0}
+            onClick={() => handleRoleSelect("student")}
+          />
+        </div>
+        {role && (
+          <>
+            <input
+              className="bg-white w-full h-14 rounded-2xl pl-4 focus:outline-none focus:ring-4 focus:ring-secundary text-default"
+              type={role === "teacher" ? "email" : "text"}
+              placeholder={role === "teacher" ? t("email") : t("user")}
+              value={identifier}
+              onChange={e => setIdentifier(e.target.value)}
+              required
             />
-            <img
-              className={`w-52 h-44 rounded-2xl cursor-pointer ${role === "student" ? "ring-4 ring-green-500" : ""}`}
-              src="/children.jpg"
-              alt="image child"
-              tabIndex={0}
-              onClick={() => handleRoleSelect("student")}
+            <input
+              className="bg-white w-full h-14 rounded-2xl pl-4 focus:outline-none focus:ring-4 focus:ring-secundary text-default"
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+              required
             />
-          </div>
-          {role && (
-            <>
-              <input
-                className="bg-white w-full h-14 rounded-2xl pl-4 focus:outline-none focus:ring-4 focus:ring-secundary text-default"
-                type={role === "teacher" ? "email" : "text"}
-                placeholder={role === "teacher" ? t("email") : t("user")}
-                value={identifier}
-                onChange={e => setIdentifier(e.target.value)}
-                required
-              />
-              <input
-                className="bg-white w-full h-14 rounded-2xl pl-4 focus:outline-none focus:ring-4 focus:ring-secundary text-default"
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-                required
-              />
-              {error && (
-                <div className="text-red-500 text-center mb-2">{error}</div>
-              )}
-              <input className="bg-secundary w-full h-14 rounded-2xl text-white cursor-pointer" type="submit" value={t("login")} />
-            </>
-          )}
-        </form>
-      </section>
-    </>
+            {error && (
+              <div className="text-red-500 text-center mb-2">{error}</div>
+            )}
+            <input className="bg-secundary w-full h-14 rounded-2xl text-white cursor-pointer" type="submit" value={t("login")} />
+          </>
+        )}
+      </form>
+    </div>
   )
 }

@@ -209,17 +209,17 @@ export default function Home() {
   }
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full animate-fade-in">
       <section>
         <h3 className="page-title text-default">{t("home")}</h3>
         <div className="flex justify-end items-center gap-3.5">
-          <img src={userData.profileImage || "/teacher.jpeg"} alt="foto perfil" className="w-12 h-12 rounded-full object-cover text-default"/>
-          <p className="text-default">{userData.name}</p>
+          <img src={userData.profileImage || "/teacher.jpeg"} alt="foto perfil" className="w-12 h-12 rounded-full object-cover shadow-lg"/>
+          <p className="text-default font-semibold">{userData.name}</p>
         </div>
-        <h1 className="text-4xl mb-12 text-default">{t("hello")}, {userData.name}!</h1>
+        <h1 className="text-4xl mb-12 text-default font-extrabold tracking-tight animate-fade-in">{t("hello")}, {userData.name}!</h1>
       </section>
       {userData.role === "teacher" ? (
-        <div className="grid grid-cols-4 gap-6 h-full flex-1">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 h-full flex-1">
           <div className="col-span-3 grid grid-cols-3 gap-6">
             <button className="bg-secundary text-white rounded-2xl text-3xl font-bold" onClick={() => setModal("createProject")}>{t("addProject")}</button>
             <button className="bg-secundary text-white rounded-2xl text-3xl font-bold" onClick={() => setModal("editProject")}>{t("editProject")}</button>
@@ -232,7 +232,7 @@ export default function Home() {
             <button className="bg-secundary text-white rounded-2xl text-3xl font-bold" onClick={() => setModal("deleteClassroom")}>{t("removeClassroom")}</button>
           </div>
           <button
-            className="bg-tertiary text-white rounded-2xl text-3xl font-bold"
+            className="bg-gradient-to-r from-primary to-tertiary hover:from-tertiary hover:to-primary text-white rounded-2xl text-3xl font-bold shadow-lg transform hover:scale-105 transition-all duration-300 px-8 py-4"
             onClick={handleLogout}
           >
             {t("logout")}
@@ -241,7 +241,7 @@ export default function Home() {
       ) : (
         <div className="flex justify-center items-center h-full">
           <button
-            className="bg-tertiary text-white rounded-2xl text-3xl font-bold"
+            className="bg-gradient-to-r from-primary to-tertiary hover:from-tertiary hover:to-primary text-white rounded-2xl text-3xl font-bold shadow-lg transform hover:scale-105 transition-all duration-300 px-8 py-4"
             onClick={handleLogout}
           >
             {t("logout")}
