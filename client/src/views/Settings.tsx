@@ -22,7 +22,7 @@ export default function Settings() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[80vh] animate-fade-in">
-      <div className="w-full max-w-xl bg-white/80 dark:bg-[#232946]/90 rounded-3xl shadow-2xl p-10 flex flex-col gap-8 backdrop-blur-md">
+      <div className="w-full max-w-xl bg-white/80 dark:bg-[#2d334a]/80 border border-gray-200 dark:border-gray-700 rounded-3xl shadow-2xl p-10 flex flex-col gap-8 backdrop-blur-md">
         <h3 className="text-3xl font-bold text-center text-primary dark:text-tertiary mb-6">{t("settings")}</h3>
         {/* Dark mode */}
         <div className="flex justify-between items-center">

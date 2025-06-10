@@ -1,24 +1,7 @@
 import { useState, useEffect } from "react"
 import Modal from "../components/Modal"
 import { useAppContext } from "../contexts/AppContext"
-
-// Centralized authenticated fetch
-async function authFetch(url, options = {}) {
-  const token = localStorage.getItem("token")
-  const res = await fetch(url, {
-    ...options,
-    headers: {
-      ...(options.headers || {}),
-      Authorization: `Bearer ${token}`
-    }
-  })
-  if (res.status === 401) {
-    localStorage.removeItem("token")
-    window.location.href = "/"
-    return null
-  }
-  return res
-}
+import { authFetch } from "../utils/authFetch"
 
 export default function Home() {
   const { t } = useAppContext()
@@ -221,18 +204,63 @@ export default function Home() {
       {userData.role === "teacher" ? (
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 h-full flex-1">
           <div className="col-span-3 grid grid-cols-3 gap-6">
-            <button className="bg-secundary text-white rounded-2xl text-3xl font-bold" onClick={() => setModal("createProject")}>{t("addProject")}</button>
-            <button className="bg-secundary text-white rounded-2xl text-3xl font-bold" onClick={() => setModal("editProject")}>{t("editProject")}</button>
-            <button className="bg-secundary text-white rounded-2xl text-3xl font-bold" onClick={() => setModal("deleteProject")}>{t("removeProject")}</button>
-            <button className="bg-secundary text-white rounded-2xl text-3xl font-bold" onClick={() => setModal("createStudent")}>{t("addStudent")}</button>
-            <button className="bg-secundary text-white rounded-2xl text-3xl font-bold" onClick={() => setModal("editStudent")}>{t("editStudent")}</button>
-            <button className="bg-secundary text-white rounded-2xl text-3xl font-bold" onClick={() => setModal("deleteStudent")}>{t("removeStudent")}</button>
-            <button className="bg-secundary text-white rounded-2xl text-3xl font-bold" onClick={() => setModal("createClassroom")}>{t("addClassroom")}</button>
-            <button className="bg-secundary text-white rounded-2xl text-3xl font-bold" onClick={() => setModal("editClassroom")}>{t("editClassroom")}</button>
-            <button className="bg-secundary text-white rounded-2xl text-3xl font-bold" onClick={() => setModal("deleteClassroom")}>{t("removeClassroom")}</button>
+            <button
+              className="bg-secundary text-white rounded-2xl text-3xl font-bold shadow-lg transform hover:scale-105 transition-all duration-300 px-4 py-3"
+              onClick={() => setModal("createProject")}
+            >
+              {t("addProject")}
+            </button>
+            <button
+              className="bg-secundary text-white rounded-2xl text-3xl font-bold shadow-lg transform hover:scale-105 transition-all duration-300 px-4 py-3"
+              onClick={() => setModal("editProject")}
+            >
+              {t("editProject")}
+            </button>
+            <button
+              className="bg-secundary text-white rounded-2xl text-3xl font-bold shadow-lg transform hover:scale-105 transition-all duration-300 px-4 py-3"
+              onClick={() => setModal("deleteProject")}
+            >
+              {t("removeProject")}
+            </button>
+            <button
+              className="bg-secundary text-white rounded-2xl text-3xl font-bold shadow-lg transform hover:scale-105 transition-all duration-300 px-4 py-3"
+              onClick={() => setModal("createStudent")}
+            >
+              {t("addStudent")}
+            </button>
+            <button
+              className="bg-secundary text-white rounded-2xl text-3xl font-bold shadow-lg transform hover:scale-105 transition-all duration-300 px-4 py-3"
+              onClick={() => setModal("editStudent")}
+            >
+              {t("editStudent")}
+            </button>
+            <button
+              className="bg-secundary text-white rounded-2xl text-3xl font-bold shadow-lg transform hover:scale-105 transition-all duration-300 px-4 py-3"
+              onClick={() => setModal("deleteStudent")}
+            >
+              {t("removeStudent")}
+            </button>
+            <button
+              className="bg-secundary text-white rounded-2xl text-3xl font-bold shadow-lg transform hover:scale-105 transition-all duration-300 px-4 py-3"
+              onClick={() => setModal("createClassroom")}
+            >
+              {t("addClassroom")}
+            </button>
+            <button
+              className="bg-secundary text-white rounded-2xl text-3xl font-bold shadow-lg transform hover:scale-105 transition-all duration-300 px-4 py-3"
+              onClick={() => setModal("editClassroom")}
+            >
+              {t("editClassroom")}
+            </button>
+            <button
+              className="bg-secundary text-white rounded-2xl text-3xl font-bold shadow-lg transform hover:scale-105 transition-all duration-300 px-4 py-3"
+              onClick={() => setModal("deleteClassroom")}
+            >
+              {t("removeClassroom")}
+            </button>
           </div>
           <button
-            className="bg-gradient-to-r from-primary to-tertiary hover:from-tertiary hover:to-primary text-white rounded-2xl text-3xl font-bold shadow-lg transform hover:scale-105 transition-all duration-300 px-8 py-4"
+            className="bg-gradient-to-r from-tertiary to-primary hover:from-primary hover:to-tertiary text-white rounded-2xl text-2xl font-bold shadow-lg transform hover:scale-105 transition-all duration-300 px-8 py-4"
             onClick={handleLogout}
           >
             {t("logout")}
@@ -249,17 +277,18 @@ export default function Home() {
         </div>
       )}
 
+      {/* Modales con glassmorphism */}
       <Modal open={modal === "createProject"} onClose={() => setModal(null)}>
         <h2 className="text-xl font-bold mb-4">{t("createProject")}</h2>
         <form onSubmit={handleCreateProject} className="flex flex-col gap-4">
           <input
-            className="border rounded px-3 py-2"
+            className="bg-gray-100 dark:bg-gray-700 border-none rounded-xl px-4 py-2 focus:ring-2 focus:ring-primary transition-all duration-300"
             placeholder={t("projectName")}
             value={projectForm.name}
             onChange={e => setProjectForm({ name: e.target.value })}
             required
           />
-          <button className="bg-primary text-white px-4 py-2 rounded" type="submit">{t("create")}</button>
+          <button className="bg-primary text-white px-4 py-2 rounded-xl shadow-md hover:bg-tertiary transition-all">{t("create")}</button>
         </form>
       </Modal>
       <Modal open={modal === "deleteProject"} onClose={() => setModal(null)}>

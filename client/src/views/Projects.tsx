@@ -40,7 +40,7 @@ export default function Projects() {
 
   return (
     <div className="animate-fade-in">
-      <h3 className="page-title text-default">{t("projects")}</h3>
+      <h3 className="page-title text-default dark:text-white">{t("projects")}</h3>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
         {filteredProjects.map((project, index) => (
           <ProjectCard key={index} project={project} />

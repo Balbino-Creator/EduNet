@@ -8,7 +8,7 @@ export default function ProjectCard({ project }) {
     <div className="group w-full space-y-6 transition-transform duration-300 hover:scale-105">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full bg-white/80 dark:bg-[#232946]/80 text-4xl font-bold text-primary dark:text-tertiary px-6 py-4 rounded-2xl shadow-lg border-2 border-primary hover:bg-primary hover:text-white transition-all duration-300"
+        className="w-full bg-white/80 dark:bg-[#232946]/80 text-3xl font-bold text-primary dark:text-tertiary px-6 py-4 rounded-2xl shadow-lg border-2 border-primary hover:bg-primary hover:text-white transition-all duration-300"
       >
         {project.name}
       </button>

@@ -90,7 +90,7 @@ export default function FileBrowser() {
   }, [selectedFile])
 
   return (
-    <div className="w-1/3 bg-white/80 dark:bg-[#232946]/90 p-4 rounded-2xl flex flex-col max-h-[70vh] min-h-[400px] shadow-lg backdrop-blur-md animate-fade-in">
+    <div className="w-1/3 bg-white/80 dark:bg-[#2d334a]/80 border border-gray-200 dark:border-gray-700 p-4 rounded-2xl flex flex-col max-h-[70vh] min-h-[400px] shadow-2xl backdrop-blur-md animate-fade-in">
       <Breadcrumb path={currentPath} onNavigate={setCurrentPath} />
       <ul className="mb-4 flex-1 overflow-y-auto">
         {currentChildren.map(item =>

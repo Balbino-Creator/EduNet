@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
-import LiveChat from "../components/LiveChat";
 import { authFetch } from "../utils/authFetch";
+import { useAppContext } from "../contexts/AppContext";
+import LiveChat from "../components/LiveChat";
 import ShareDirectory from "../components/ShareDirectory";
 import FileBrowser from "../components/FileBrowser";
-import { useAppContext } from "../contexts/AppContext";
 
 export default function LiveCode() {
   const { t } = useAppContext();
@@ -30,19 +30,21 @@ export default function LiveCode() {
   }, []);
 
   if (error) return <p className="text-red-500">{error}</p>;
-  if (userClassrooms.length === 0) return <p className="text-xl text-default">{t("noClassrooms") || "You are not assigned to any classroom"}</p>;
+  if (userClassrooms.length === 0) return <p className="text-xl text-default dark:text-white">{t("noClassrooms") || "You are not assigned to any classroom"}</p>;
 
   return (
     <div className="flex flex-col h-full animate-fade-in">
       <section className="mb-12">
-        <h3 className="page-title text-default">{t("liveCode")}</h3>
+        <h3 className="page-title text-default dark:text-white">{t("liveCode")}</h3>
         <select
-          className="border rounded px-3 py-2 mt-4 bg-white/80 dark:bg-gray-800 text-default dark:text-white shadow-md focus:ring-2 focus:ring-primary transition-all duration-300"
+          className="border rounded px-3 py-2 mt-4 bg-white/80 dark:bg-gray-800 text-gray-800 dark:text-white shadow-md focus:ring-2 focus:ring-primary transition-all duration-300"
           value={selectedClassroomId}
           onChange={e => setSelectedClassroomId(e.target.value)}
         >
           {userClassrooms.map(c => (
-            <option key={c.id} value={c.id}>{c.name}</option>
+            <option key={c.id} value={c.id} className="text-gray-800 dark:text-white bg-white dark:bg-gray-800">
+              {c.name}
+            </option>
           ))}
         </select>
       </section>

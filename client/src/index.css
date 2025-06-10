@@ -46,7 +46,14 @@ body {
 }
 
 body.dark {
-  background: linear-gradient(120deg, #232946 0%, #8e51ff 100%);
+  background: linear-gradient(120deg, #181c2f 0%, #232946 100%);
+}
+
+.text-default {
+  color: #232946;
+}
+body.dark .text-default {
+  color: #f4f4f4;
 }
 
 ::-webkit-scrollbar {

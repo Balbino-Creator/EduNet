@@ -26,7 +26,6 @@ export default function Login() {
       })
       const data = await res.json()
       if (!res.ok) {
-
         if (data.error === "Invalid credentials") setError(t("invalidCredentials"))
         else if (data.error?.includes("LDAP authentication failed")) setError(t("ldapFailed"))
         else setError(data.error || t("invalidCredentials"))
@@ -40,32 +39,32 @@ export default function Login() {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-primary/60 to-tertiary/60">
+    <div className="fixed inset-0 flex items-center justify-center">
       <form
         onSubmit={handleSubmit}
-        className="w-[400px] bg-white/80 dark:bg-[#232946]/90 rounded-3xl shadow-2xl p-10 flex flex-col gap-6 animate-fade-in backdrop-blur-md"
+        className="w-[400px] bg-white dark:bg-[#232946] rounded-3xl shadow-2xl p-10 flex flex-col gap-6 animate-fade-in"
       >
         <h3 className="text-3xl font-bold text-center text-primary dark:text-tertiary mb-6">{t("login")}</h3>
-        <div className="flex justify-between">
+        <div className="flex justify-between gap-8 mb-4">
           <img
-            className={`w-52 h-44 rounded-2xl cursor-pointer ${role === "teacher" ? "ring-4 ring-blue-500" : ""}`}
+            className={`w-40 h-36 rounded-2xl cursor-pointer object-cover shadow-lg transition-all duration-300 ${role === "teacher" ? "ring-4 ring-primary scale-105" : "hover:scale-105"}`}
             src="/teacher.jpeg"
             alt="image teacher"
             tabIndex={0}
-            onClick={() => handleRoleSelect("teacher")}
+            onClick={() => setRole("teacher")}
           />
           <img
-            className={`w-52 h-44 rounded-2xl cursor-pointer ${role === "student" ? "ring-4 ring-green-500" : ""}`}
+            className={`w-40 h-36 rounded-2xl cursor-pointer object-cover shadow-lg transition-all duration-300 ${role === "student" ? "ring-4 ring-tertiary scale-105" : "hover:scale-105"}`}
             src="/children.jpg"
             alt="image child"
             tabIndex={0}
-            onClick={() => handleRoleSelect("student")}
+            onClick={() => setRole("student")}
           />
         </div>
         {role && (
           <>
             <input
-              className="bg-white w-full h-14 rounded-2xl pl-4 focus:outline-none focus:ring-4 focus:ring-secundary text-default"
+              className="bg-gray-100 dark:bg-gray-700 w-full h-14 rounded-2xl pl-4 focus:outline-none focus:ring-4 focus:ring-primary text-default dark:text-white transition-all placeholder-gray-500 dark:placeholder-gray-300"
               type={role === "teacher" ? "email" : "text"}
               placeholder={role === "teacher" ? t("email") : t("user")}
               value={identifier}
@@ -73,9 +72,9 @@ export default function Login() {
               required
             />
             <input
-              className="bg-white w-full h-14 rounded-2xl pl-4 focus:outline-none focus:ring-4 focus:ring-secundary text-default"
+              className="bg-gray-100 dark:bg-gray-700 w-full h-14 rounded-2xl pl-4 focus:outline-none focus:ring-4 focus:ring-tertiary text-default dark:text-white transition-all placeholder-gray-500 dark:placeholder-gray-300"
               type="password"
-              placeholder="Password"
+              placeholder={t("password")}
               value={password}
               onChange={e => setPassword(e.target.value)}
               required
@@ -83,7 +82,9 @@ export default function Login() {
             {error && (
               <div className="text-red-500 text-center mb-2">{error}</div>
             )}
-            <input className="bg-secundary w-full h-14 rounded-2xl text-white cursor-pointer" type="submit" value={t("login")} />
+            <button className="bg-gradient-to-r from-primary to-tertiary hover:from-tertiary hover:to-primary text-white font-bold py-3 rounded-2xl shadow-lg transition-all duration-300">
+              {t("login")}
+            </button>
           </>
         )}
       </form>
