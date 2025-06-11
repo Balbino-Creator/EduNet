@@ -22,7 +22,7 @@ function Breadcrumb({ path, onNavigate }) {
   )
 }
 
-const TEXT_EXTENSIONS = [".txt", ".js", ".ts", ".py", ".md", ".json", ".html", ".css", ".env"]
+const TEXT_EXTENSIONS = [".txt", ".js", ".ts", ".py", ".md", ".json", ".html", ".css", ".env", "php", ".java", ".c", ".cpp", ".go", ".rb"]
 
 export default function FileBrowser() {
   const [tree, setTree] = useState([])
@@ -107,7 +107,7 @@ export default function FileBrowser() {
       </ul>
       {selectedFile && (
         <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-2 overflow-auto shadow-inner" style={{ maxHeight: "30vh" }}>
-          <div className="font-mono text-xs whitespace-pre-wrap text-default dark:text-white">{fileContent}</div>
+          <div className="font-mono text-xs whitespace-pre-wrap text-gray-800 dark:text-gray-100">{fileContent}</div>
         </div>
       )}
     </div>

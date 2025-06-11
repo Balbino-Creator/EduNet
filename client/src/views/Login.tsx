@@ -39,24 +39,24 @@ export default function Login() {
   }
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/60 to-tertiary/60 px-2">
       <form
         onSubmit={handleSubmit}
-        className="w-[400px] bg-white dark:bg-[#232946] rounded-3xl shadow-2xl p-10 flex flex-col gap-6 animate-fade-in"
+        className="w-full max-w-md bg-white dark:bg-[#232946] rounded-3xl shadow-2xl p-4 sm:p-8 flex flex-col gap-6 animate-fade-in"
       >
-        <h3 className="text-3xl font-bold text-center text-primary dark:text-tertiary mb-6">{t("login")}</h3>
-        <div className="flex justify-between gap-8 mb-4">
+        <h3 className="text-2xl sm:text-3xl font-bold text-center text-primary dark:text-tertiary mb-4 sm:mb-6">{t("login")}</h3>
+        <div className="flex flex-col sm:flex-row justify-between items-center gap-4 sm:gap-8 mb-4">
           <img
-            className={`w-40 h-36 rounded-2xl cursor-pointer object-cover shadow-lg transition-all duration-300 ${role === "teacher" ? "ring-4 ring-primary scale-105" : "hover:scale-105"}`}
+            className={`w-24 h-20 sm:w-40 sm:h-36 rounded-2xl cursor-pointer object-cover shadow-lg transition-all duration-300 ${role === "teacher" ? "ring-4 ring-primary scale-105" : "hover:scale-105"}`}
             src="/teacher.jpeg"
-            alt="image teacher"
+            alt={t("teacherImage") || "Teacher"}
             tabIndex={0}
             onClick={() => setRole("teacher")}
           />
           <img
-            className={`w-40 h-36 rounded-2xl cursor-pointer object-cover shadow-lg transition-all duration-300 ${role === "student" ? "ring-4 ring-tertiary scale-105" : "hover:scale-105"}`}
+            className={`w-24 h-20 sm:w-40 sm:h-36 rounded-2xl cursor-pointer object-cover shadow-lg transition-all duration-300 ${role === "student" ? "ring-4 ring-tertiary scale-105" : "hover:scale-105"}`}
             src="/children.jpg"
-            alt="image child"
+            alt={t("studentImage") || "Student"}
             tabIndex={0}
             onClick={() => setRole("student")}
           />
@@ -64,7 +64,7 @@ export default function Login() {
         {role && (
           <>
             <input
-              className="bg-gray-100 dark:bg-gray-700 w-full h-14 rounded-2xl pl-4 focus:outline-none focus:ring-4 focus:ring-primary text-default dark:text-white transition-all placeholder-gray-500 dark:placeholder-gray-300"
+              className="bg-gray-100 dark:bg-gray-700 w-full h-12 sm:h-14 rounded-2xl pl-4 focus:outline-none focus:ring-4 focus:ring-primary text-default dark:text-white transition-all placeholder-gray-500 dark:placeholder-gray-300"
               type={role === "teacher" ? "email" : "text"}
               placeholder={role === "teacher" ? t("email") : t("user")}
               value={identifier}
@@ -72,7 +72,7 @@ export default function Login() {
               required
             />
             <input
-              className="bg-gray-100 dark:bg-gray-700 w-full h-14 rounded-2xl pl-4 focus:outline-none focus:ring-4 focus:ring-tertiary text-default dark:text-white transition-all placeholder-gray-500 dark:placeholder-gray-300"
+              className="bg-gray-100 dark:bg-gray-700 w-full h-12 sm:h-14 rounded-2xl pl-4 focus:outline-none focus:ring-4 focus:ring-tertiary text-default dark:text-white transition-all placeholder-gray-500 dark:placeholder-gray-300"
               type="password"
               placeholder={t("password")}
               value={password}

@@ -192,75 +192,75 @@ export default function Home() {
   }
 
   return (
-    <div className="flex flex-col h-full animate-fade-in">
+    <div className="flex flex-col h-full animate-fade-in px-2 sm:px-6">
       <section>
         <h3 className="page-title text-default">{t("home")}</h3>
         <div className="flex justify-end items-center gap-3.5">
           <img src={userData.profileImage || "/teacher.jpeg"} alt="foto perfil" className="w-12 h-12 rounded-full object-cover shadow-lg"/>
           <p className="text-default font-semibold">{userData.name}</p>
         </div>
-        <h1 className="text-4xl mb-12 text-default font-extrabold tracking-tight animate-fade-in">{t("hello")}, {userData.name}!</h1>
+        <h1 className="text-2xl sm:text-4xl mb-6 sm:mb-12 text-default font-extrabold tracking-tight animate-fade-in">{t("hello")}, {userData.name}!</h1>
       </section>
       {userData.role === "teacher" ? (
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 h-full flex-1">
-          <div className="col-span-3 grid grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 sm:gap-6 h-full flex-1">
+          <div className="col-span-3 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
             <button
-              className="bg-secundary text-white rounded-2xl text-3xl font-bold shadow-lg transform hover:scale-105 transition-all duration-300 px-4 py-3"
+              className="bg-secundary text-white rounded-2xl text-lg sm:text-2xl md:text-3xl font-bold shadow-lg transform hover:scale-105 transition-all duration-300 px-4 py-3"
               onClick={() => setModal("createProject")}
             >
               {t("addProject")}
             </button>
             <button
-              className="bg-secundary text-white rounded-2xl text-3xl font-bold shadow-lg transform hover:scale-105 transition-all duration-300 px-4 py-3"
+              className="bg-secundary text-white rounded-2xl text-lg sm:text-2xl md:text-3xl font-bold shadow-lg transform hover:scale-105 transition-all duration-300 px-4 py-3"
               onClick={() => setModal("editProject")}
             >
               {t("editProject")}
             </button>
             <button
-              className="bg-secundary text-white rounded-2xl text-3xl font-bold shadow-lg transform hover:scale-105 transition-all duration-300 px-4 py-3"
+              className="bg-secundary text-white rounded-2xl text-lg sm:text-2xl md:text-3xl font-bold shadow-lg transform hover:scale-105 transition-all duration-300 px-4 py-3"
               onClick={() => setModal("deleteProject")}
             >
               {t("removeProject")}
             </button>
             <button
-              className="bg-secundary text-white rounded-2xl text-3xl font-bold shadow-lg transform hover:scale-105 transition-all duration-300 px-4 py-3"
+              className="bg-secundary text-white rounded-2xl text-lg sm:text-2xl md:text-3xl font-bold shadow-lg transform hover:scale-105 transition-all duration-300 px-4 py-3"
               onClick={() => setModal("createStudent")}
             >
               {t("addStudent")}
             </button>
             <button
-              className="bg-secundary text-white rounded-2xl text-3xl font-bold shadow-lg transform hover:scale-105 transition-all duration-300 px-4 py-3"
+              className="bg-secundary text-white rounded-2xl text-lg sm:text-2xl md:text-3xl font-bold shadow-lg transform hover:scale-105 transition-all duration-300 px-4 py-3"
               onClick={() => setModal("editStudent")}
             >
               {t("editStudent")}
             </button>
             <button
-              className="bg-secundary text-white rounded-2xl text-3xl font-bold shadow-lg transform hover:scale-105 transition-all duration-300 px-4 py-3"
+              className="bg-secundary text-white rounded-2xl text-lg sm:text-2xl md:text-3xl font-bold shadow-lg transform hover:scale-105 transition-all duration-300 px-4 py-3"
               onClick={() => setModal("deleteStudent")}
             >
               {t("removeStudent")}
             </button>
             <button
-              className="bg-secundary text-white rounded-2xl text-3xl font-bold shadow-lg transform hover:scale-105 transition-all duration-300 px-4 py-3"
+              className="bg-secundary text-white rounded-2xl text-lg sm:text-2xl md:text-3xl font-bold shadow-lg transform hover:scale-105 transition-all duration-300 px-4 py-3"
               onClick={() => setModal("createClassroom")}
             >
               {t("addClassroom")}
             </button>
             <button
-              className="bg-secundary text-white rounded-2xl text-3xl font-bold shadow-lg transform hover:scale-105 transition-all duration-300 px-4 py-3"
+              className="bg-secundary text-white rounded-2xl text-lg sm:text-2xl md:text-3xl font-bold shadow-lg transform hover:scale-105 transition-all duration-300 px-4 py-3"
               onClick={() => setModal("editClassroom")}
             >
               {t("editClassroom")}
             </button>
             <button
-              className="bg-secundary text-white rounded-2xl text-3xl font-bold shadow-lg transform hover:scale-105 transition-all duration-300 px-4 py-3"
+              className="bg-secundary text-white rounded-2xl text-lg sm:text-2xl md:text-3xl font-bold shadow-lg transform hover:scale-105 transition-all duration-300 px-4 py-3"
               onClick={() => setModal("deleteClassroom")}
             >
               {t("removeClassroom")}
             </button>
           </div>
           <button
-            className="bg-gradient-to-r from-tertiary to-primary hover:from-primary hover:to-tertiary text-white rounded-2xl text-2xl font-bold shadow-lg transform hover:scale-105 transition-all duration-300 px-8 py-4"
+            className="bg-gradient-to-r from-tertiary to-primary hover:from-primary hover:to-tertiary text-white rounded-2xl text-lg sm:text-2xl font-bold shadow-lg transform hover:scale-105 transition-all duration-300 px-6 sm:px-8 py-3 sm:py-4 mt-4 md:mt-0"
             onClick={handleLogout}
           >
             {t("logout")}
@@ -269,7 +269,7 @@ export default function Home() {
       ) : (
         <div className="flex justify-center items-center h-full">
           <button
-            className="bg-gradient-to-r from-primary to-tertiary hover:from-tertiary hover:to-primary text-white rounded-2xl text-3xl font-bold shadow-lg transform hover:scale-105 transition-all duration-300 px-8 py-4"
+            className="bg-gradient-to-r from-primary to-tertiary hover:from-tertiary hover:to-primary text-white rounded-2xl text-lg sm:text-3xl font-bold shadow-lg transform hover:scale-105 transition-all duration-300 px-6 sm:px-8 py-3 sm:py-4"
             onClick={handleLogout}
           >
             {t("logout")}
