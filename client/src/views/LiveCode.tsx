@@ -34,29 +34,38 @@ export default function LiveCode() {
 
   return (
     <div className="flex flex-col h-full animate-fade-in">
-      <section className="mb-12">
-        <h3 className="page-title text-default dark:text-white">{t("liveCode")}</h3>
-        <select
-          className="border rounded px-3 py-2 mt-4 bg-white/80 dark:bg-gray-800 text-gray-800 dark:text-white shadow-md focus:ring-2 focus:ring-primary transition-all duration-300"
-          value={selectedClassroomId}
-          onChange={e => setSelectedClassroomId(e.target.value)}
-        >
-          {userClassrooms.map(c => (
-            <option key={c.id} value={c.id} className="text-gray-800 dark:text-white bg-white dark:bg-gray-800">
-              {c.name}
-            </option>
-          ))}
-        </select>
-      </section>
-      {selectedClassroomId && userData && (
-        <div className="flex space-x-6 h-full">
-          <LiveChat classroomId={selectedClassroomId} user={userData} />
-          {userData?.role === "teacher" && (
-            <ShareDirectory onShared={() => window.location.reload()} />
-          )}
-          <FileBrowser />
+      {/* Only show on large screens */}
+      <div className="block lg:hidden w-full h-[60vh] flex items-center justify-center">
+        <div className="bg-white/90 dark:bg-[#232946]/90 rounded-2xl shadow-lg p-8 text-center max-w-xs mx-auto">
+          <h2 className="text-2xl font-bold text-primary dark:text-tertiary mb-4">{t("desktopOnlyTitle")}</h2>
+          <p className="text-lg font-semibold text-black dark:text-white">{t("desktopOnlyMessage")}</p>
         </div>
-      )}
+      </div>
+      <div className="hidden lg:flex flex-col h-full">
+        <section className="mb-12">
+          <h3 className="page-title text-default dark:text-white">{t("liveCode")}</h3>
+          <select
+            className="border rounded px-3 py-2 mt-4 bg-white/80 dark:bg-gray-800 text-gray-800 dark:text-white shadow-md focus:ring-2 focus:ring-primary transition-all duration-300"
+            value={selectedClassroomId}
+            onChange={e => setSelectedClassroomId(e.target.value)}
+          >
+            {userClassrooms.map(c => (
+              <option key={c.id} value={c.id} className="text-gray-800 dark:text-white bg-white dark:bg-gray-800">
+                {c.name}
+              </option>
+            ))}
+          </select>
+        </section>
+        {selectedClassroomId && userData && (
+          <div className="flex space-x-6 h-full">
+            <LiveChat classroomId={selectedClassroomId} user={userData} />
+            {userData?.role === "teacher" && (
+              <ShareDirectory onShared={() => window.location.reload()} />
+            )}
+            <FileBrowser />
+          </div>
+        )}
+      </div>
     </div>
   );
 }

@@ -55,9 +55,13 @@ export default function Layout() {
       )}
       {/* Responsive sidebar/menu */}
       <aside className={`
-        fixed z-40 top-0 left-0 h-full w-full md:w-80 bg-white/80 dark:bg-[#232946]/90 text-primary dark:text-white shadow-2xl rounded-none md:rounded-tr-3xl md:rounded-br-3xl flex flex-col transition-transform duration-300
+        fixed z-40 top-0 left-0 h-full w-full md:w-80
+        ${darkMode ? "bg-[#232946]/90 text-white" : "bg-white/80 text-primary"}
+        shadow-2xl rounded-none md:rounded-tr-3xl md:rounded-br-3xl flex flex-col
+        transition-transform duration-300
         ${menuOpen ? "translate-x-0" : "-translate-x-full"}
         md:static md:translate-x-0 md:pl-12 md:pt-12
+        animate-slide-in-left
       `}>
         <button
           className="absolute top-4 right-4 md:hidden text-3xl"

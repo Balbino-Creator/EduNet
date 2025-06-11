@@ -53,6 +53,9 @@ const translations = {
     invalidCredentials: "Usuario o contraseña incorrectos.",
     ldapFailed: "Autenticación LDAP fallida. Revisa tus credenciales.",
     networkError: "Error de red, inténtalo de nuevo más tarde.",
+    // Mensajes de escritorio
+    desktopOnlyTitle: "Solo disponible en escritorio",
+    desktopOnlyMessage: "Esta página solo está disponible en pantallas grandes. Por favor, accede desde un ordenador.",
   },
   English: {
     home: "Home",
@@ -106,6 +109,9 @@ const translations = {
     invalidCredentials: "Invalid username or password.",
     ldapFailed: "LDAP authentication failed. Check your credentials.",
     networkError: "Network error, please try again later.",
+    // Desktop messages
+    desktopOnlyTitle: "Desktop only",
+    desktopOnlyMessage: "This page is only available on large screens. Please access from a desktop device."
   }
 }
 
