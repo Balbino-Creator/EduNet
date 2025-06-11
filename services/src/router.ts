@@ -14,85 +14,114 @@ const router = Router()
 /**
  * @swagger
  * components:
- *      schemas:
- *          User:
- *              type: object
- *              properties:
- *                  id:
- *                      type: integer
- *                      description: The User ID
- *                      example: 1
- *                  name:
- *                      type: string
- *                      description: The user's name
- *                      example: John Doe
- *                  last_names:
- *                      type: string
- *                      description: The user's last names
- *                      example: Smith
- *                  role:
- *                      type: string
- *                      enum: [TEACHER, STUDENT]
- *                      description: User role
- *                      example: TEACHER
- *                  email:
- *                      type: string
- *                      format: email
- *                      description: Email (only for teachers)
- *                      example: john.doe@example.com
- *                  password:
- *                      type: string
- *                      description: User's password
- *                      example: "securePassword123"
- *                  confirmed:
- *                      type: boolean
- *                      description: Indicates if the user confirmed their email
- *                      example: false
- *          Project:
- *              type: object
- *              properties:
- *                  id:
- *                      type: integer
- *                      description: Project ID
- *                      example: 1
- *                  name:
- *                      type: string
- *                      description: Project name
- *                      example: Science Lab
- *          Classroom:
- *              type: object
- *              properties:
- *                  id:
- *                      type: integer
- *                      description: Classroom ID
- *                      example: 1
- *                  name:
- *                      type: string
- *                      description: Classroom name
- *                      example: Math 101
- *                  projectId:
- *                      type: integer
- *                      description: Associated project ID
- *                      example: 1
- *          ChatMessage:
- *              type: object
- *              properties:
- *                  id:
- *                      type: integer
- *                      description: Message ID
- *                      example: 1
- *                  userId:
- *                      type: integer
- *                      description: Sender User ID
- *                      example: 2
- *                  classroomId:
- *                      type: integer
- *                      description: Classroom ID where message was sent
- *                      example: 1
- *                  message:
- *                      type: string
- *                      description: Message content
- *                      example: "Hello everyone!"
+ *   schemas:
+ *     User:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: integer
+ *           description: The User ID
+ *           example: 1
+ *         name:
+ *           type: string
+ *           description: The user's name
+ *           example: John Doe
+ *         last_names:
+ *           type: string
+ *           description: The user's last names
+ *           example: Smith
+ *         role:
+ *           type: string
+ *           enum: [TEACHER, STUDENT]
+ *           description: User role
+ *           example: TEACHER
+ *         email:
+ *           type: string
+ *           format: email
+ *           description: Email (only for teachers)
+ *           example: john.doe@example.com
+ *         password:
+ *           type: string
+ *           description: User's password
+ *           example: "securePassword123"
+ *         confirmed:
+ *           type: boolean
+ *           description: Indicates if the user confirmed their email
+ *           example: false
+ *     Project:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: integer
+ *           description: Project ID
+ *           example: 1
+ *         name:
+ *           type: string
+ *           description: Project name
+ *           example: Science Lab
+ *     Classroom:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: integer
+ *           description: Classroom ID
+ *           example: 1
+ *         name:
+ *           type: string
+ *           description: Classroom name
+ *           example: Math 101
+ *         projectId:
+ *           type: integer
+ *           description: Associated project ID
+ *           example: 1
+ *     ChatMessage:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: integer
+ *           description: Message ID
+ *           example: 1
+ *         userId:
+ *           type: integer
+ *           description: Sender User ID
+ *           example: 2
+ *         classroomId:
+ *           type: integer
+ *           description: Classroom ID where message was sent
+ *           example: 1
+ *         message:
+ *           type: string
+ *           description: Message content
+ *           example: "Hello everyone!"
+ *     LiveCodeState:
+ *       type: object
+ *       properties:
+ *         classroomId:
+ *           type: integer
+ *           description: The classroom ID
+ *           example: 1
+ *         code:
+ *           type: string
+ *           description: The live code
+ *           example: "print('Hello, world!')"
+ *         language:
+ *           type: string
+ *           description: The programming language
+ *           example: "python"
+ *     FileBrowserTree:
+ *       type: object
+ *       properties:
+ *         name:
+ *           type: string
+ *           description: File or directory name
+ *         type:
+ *           type: string
+ *           enum: [file, directory]
+ *           description: Type of entry
+ *         children:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/FileBrowserTree'
  */
 
 // Auth endpoints

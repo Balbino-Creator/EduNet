@@ -22,7 +22,7 @@ export default function ShareDirectory({ onShared }) {
         type="text"
         value={dir}
         onChange={e => setDir(e.target.value)}
-        placeholder="C:\Users\balbi\Desktop\TU_PROYECTO"
+        placeholder="C:\Users\balbi\Desktop\YOUR_PROJECT"
         className="border rounded px-3 py-2 w-full mb-2"
       />
       <button className="bg-primary text-white px-4 py-2 rounded" type="submit">Share</button>

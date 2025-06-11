@@ -277,7 +277,6 @@ export default function Home() {
         </div>
       )}
 
-      {/* Modales con glassmorphism */}
       <Modal open={modal === "createProject"} onClose={() => setModal(null)}>
         <h2 className="text-xl font-bold mb-4">{t("createProject")}</h2>
         <form onSubmit={handleCreateProject} className="flex flex-col gap-4">

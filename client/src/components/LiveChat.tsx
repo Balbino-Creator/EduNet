@@ -43,7 +43,6 @@ export default function LiveChat({ classroomId, user }) {
     setInput("")
   }
 
-  // Calcula desconectados
   const disconnected = allUsers.filter(
     u => !onlineUsers.some(ou => ou.id === u.id)
   )

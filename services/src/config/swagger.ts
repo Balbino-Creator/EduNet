@@ -20,6 +20,14 @@ const options : swaggerJSDoc.Options = {
             {
                 name: 'ChatMessages',
                 description: 'API operations related to ChatMessages'
+            },
+            {
+                name: 'LiveCode',
+                description: 'API operations related to Live Code (real-time code sharing and files)'
+            },
+            {
+                name: 'FileBrowser',
+                description: 'API operations related to file browsing and sharing'
             }
         ],
         info: {
