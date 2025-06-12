@@ -32,7 +32,7 @@ export default function FileBrowser() {
   const [selectedFile, setSelectedFile] = useState("")
 
   useEffect(() => {
-    authFetch("http://localhost:4000/api/files/tree")
+    authFetch("/files/tree")
       .then(res => res && res.json())
       .then(data => {
         if (data.error) {
@@ -65,7 +65,7 @@ export default function FileBrowser() {
       setSelectedFile(file.path)
       return
     }
-    authFetch(`http://localhost:4000/api/files/content?path=${encodeURIComponent(file.path)}`)
+    authFetch(`/files/content?path=${encodeURIComponent(file.path)}`)
       .then(res => res && res.json())
       .then(data => {
         setFileContent(data.content)
@@ -80,7 +80,7 @@ export default function FileBrowser() {
       const normalizedSel = selectedFile.replace(/\\/g, "/")
       console.log("fileChanged event received:", normalizedRel, "selected:", normalizedSel)
       if (normalizedRel === normalizedSel) {
-        authFetch(`http://localhost:4000/api/files/content?path=${encodeURIComponent(selectedFile)}`)
+        authFetch(`/files/content?path=${encodeURIComponent(selectedFile)}`)
           .then(res => res && res.json())
           .then(data => setFileContent(data.content))
       }

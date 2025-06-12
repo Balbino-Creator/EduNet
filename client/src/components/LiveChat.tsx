@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { io } from "socket.io-client"
 import { authFetch } from "../utils/authFetch"
 
-const socket = io("http://localhost:4000")
+const socket = io(import.meta.env.VITE_SOCKET_URL)
 
 export default function LiveChat({ classroomId, user }) {
   const [onlineUsers, setOnlineUsers] = useState([])
@@ -13,7 +13,7 @@ export default function LiveChat({ classroomId, user }) {
   // Fetch all users of the classroom
   useEffect(() => {
     if (!classroomId) return
-    authFetch(`http://localhost:4000/api/classrooms/${classroomId}/users`)
+    authFetch(`/classrooms/${classroomId}/users`)
       .then(res => res && res.json())
       .then(data => setAllUsers(data.users || []))
   }, [classroomId])

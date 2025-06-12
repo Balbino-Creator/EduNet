@@ -23,7 +23,7 @@ export default function Layout() {
       setLoading(false)
       return
     }
-    authFetch("http://localhost:4000/api/me")
+    authFetch("/me")
       .then(res => res && res.json())
       .then(data => {
         if (data && data.data) setUserData(data.data)

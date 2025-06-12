@@ -25,7 +25,7 @@ export default function Home() {
   const [modal, setModal] = useState<null | string>(null)
 
   useEffect(() => {
-    authFetch("http://localhost:4000/api/me")
+    authFetch("/me")
       .then(res => res && res.json())
       .then(data => {
         if (data && data.error) setError(data.error)
@@ -33,17 +33,17 @@ export default function Home() {
       })
       .catch(() => setError("Failed to load user data"))
 
-    authFetch("http://localhost:4000/api/projects")
+    authFetch("/projects")
       .then(res => res && res.json())
       .then(data => setProjects((data && data.data) || []))
       .catch(() => setError("Failed to load projects"))
 
-    authFetch("http://localhost:4000/api/students")
+    authFetch("/students")
       .then(res => res && res.json())
       .then(data => setStudents((data && data.data) || []))
       .catch(() => setError("Failed to load students"))
 
-    authFetch("http://localhost:4000/api/classrooms")
+    authFetch("/classrooms")
       .then(res => res && res.json())
       .then(data => setClassrooms((data && data.data) || []))
       .catch(() => setError("Failed to load classrooms"))
@@ -51,7 +51,7 @@ export default function Home() {
 
   const handleCreateProject = async (e) => {
     e.preventDefault()
-    const res = await authFetch("http://localhost:4000/api/projects", {
+    const res = await authFetch("/projects", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name: projectForm.name })
@@ -64,14 +64,14 @@ export default function Home() {
     }
   }
   const handleDeleteProject = async (id) => {
-    const res = await authFetch(`http://localhost:4000/api/projects/${id}`, {
+    const res = await authFetch(`/projects/${id}`, {
       method: "DELETE"
     })
     if (res && res.ok) setProjects(projects.filter(p => p.id !== id))
   }
   const handleEditProject = async (e) => {
     e.preventDefault()
-    const res = await authFetch(`http://localhost:4000/api/projects/${selectedProject.id}`, {
+    const res = await authFetch(`/projects/${selectedProject.id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name: projectForm.name })
@@ -88,7 +88,7 @@ export default function Home() {
   const handleCreateStudent = async (e) => {
     e.preventDefault()
     setStudentError("")
-    const res = await authFetch("http://localhost:4000/api/users", {
+    const res = await authFetch("/users", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -110,11 +110,11 @@ export default function Home() {
     }
   }
   const handleDeleteStudent = async (id) => {
-    const res = await authFetch(`http://localhost:4000/api/users/${id}`, {
+    const res = await authFetch(`/users/${id}`, {
       method: "DELETE"
     })
     if (res && res.ok) {
-      const studentsRes = await authFetch("http://localhost:4000/api/students")
+      const studentsRes = await authFetch("/students")
       const data = studentsRes && await studentsRes.json()
       setStudents((data && data.data) || [])
     }
@@ -131,7 +131,7 @@ export default function Home() {
     }
     if (studentForm.password) body.password = studentForm.password
 
-    const res = await authFetch(`http://localhost:4000/api/users/${selectedStudent.id}`, {
+    const res = await authFetch(`/users/${selectedStudent.id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body)
@@ -149,7 +149,7 @@ export default function Home() {
 
   const handleCreateClassroom = async (e) => {
     e.preventDefault()
-    const res = await authFetch("http://localhost:4000/api/classrooms", {
+    const res = await authFetch("/classrooms", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name: classroomForm.name, projectId: Number(classroomForm.projectId) })
@@ -162,14 +162,14 @@ export default function Home() {
     }
   }
   const handleDeleteClassroom = async (id) => {
-    const res = await authFetch(`http://localhost:4000/api/classrooms/${id}`, {
+    const res = await authFetch(`/classrooms/${id}`, {
       method: "DELETE"
     })
     if (res && res.ok) setClassrooms(classrooms.filter(c => c.id !== id))
   }
   const handleEditClassroom = async (e) => {
     e.preventDefault()
-    const res = await authFetch(`http://localhost:4000/api/classrooms/${selectedClassroom.id}`, {
+    const res = await authFetch(`/classrooms/${selectedClassroom.id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name: classroomForm.name })

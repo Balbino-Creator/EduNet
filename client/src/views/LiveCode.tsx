@@ -13,7 +13,7 @@ export default function LiveCode() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    authFetch("http://localhost:4000/api/classrooms")
+    authFetch("/classrooms")
       .then(res => res && res.json())
       .then(data => {
         setUserClassrooms(data.data || []);
@@ -23,7 +23,7 @@ export default function LiveCode() {
   }, []);
 
   useEffect(() => {
-    authFetch("http://localhost:4000/api/me")
+    authFetch("/me")
       .then(res => res && res.json())
       .then(data => setUserData(data.data))
       .catch(() => setError("Failed to load user data"));

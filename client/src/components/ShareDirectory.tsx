@@ -7,7 +7,7 @@ export default function ShareDirectory({ onShared }) {
   const handleShare = async (e) => {
     e.preventDefault()
     if (!dir) return
-    const res = await authFetch("http://localhost:4000/api/files/share", {
+    const res = await authFetch("/files/share", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ dir })

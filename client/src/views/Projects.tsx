@@ -10,14 +10,14 @@ export default function Projects() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    authFetch("http://localhost:4000/api/me")
+    authFetch("/me")
       .then(response => response && response.json())
       .then(data => setUserData(data.data))
       .catch(() => setError("Failed to load user data"));
   }, []);
 
   useEffect(() => {
-    authFetch("http://localhost:4000/api/projects")
+    authFetch("/projects")
       .then(response => response && response.json())
       .then(data => setProjectsData(data.data))
       .catch(() => setError("Failed to load projects"));

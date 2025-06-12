@@ -7,4 +7,8 @@ export default defineConfig({
   plugins: [react(),
     tailwindcss(),
   ],
+  server: {
+    host: '0.0.0.0',
+    allowedHosts: ['edunet.org.es', 'www.edunet.org.es']
+  }
 })

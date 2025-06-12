@@ -8,7 +8,7 @@ export default function Settings() {
   const [error, setError] = useState("")
 
   useEffect(() => {
-    authFetch("http://localhost:4000/api/me")
+    authFetch("/me")
       .then(response => response && response.json())
       .then(data => {
         if (data && data.error) setError(data.error)
