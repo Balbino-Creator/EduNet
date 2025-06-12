@@ -1,4 +1,4 @@
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:4000/api";
+const API_URL = import.meta.env.VITE_API_URL || "https://www.edunet.org.es/api";
 
 export async function authFetch(path, options = {}) {
   const token = localStorage.getItem("token");
